@@ -9,6 +9,11 @@
         <class>amedeo.mignano.entities.Venditore</class>
         <class>amedeo.mignano.entities.Rivenditore</class>
         <class>amedeo.mignano.entities.Distributore</class>
+        <class>amedeo.mignano.entities.Venditore</class>
+        <class>amedeo.mignano.entities.Rivenditore</class>
+        <class>amedeo.mignano.entities.Distributore</class>
+
+
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/bw4db"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
