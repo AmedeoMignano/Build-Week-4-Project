@@ -1,0 +1,107 @@
+package amedeo.mignano.dao;
+
+import amedeo.mignano.entities.MezzoTrasporto;
+import amedeo.mignano.entities.enums.Stato;
+import amedeo.mignano.entities.enums.TipoMezzoTrasporto;
+import amedeo.mignano.exceptions.ElementoEsistenteException;
+import amedeo.mignano.exceptions.ElementoNonTrovatoException;
+import amedeo.mignano.exceptions.InputErratoException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+
+import java.util.Scanner;
+
+public class MezzoTrasportoDAO {
+    private final EntityManager entityManager;
+
+    public MezzoTrasportoDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public void creaSalva(){
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.println("Inserisci TIPOLOGIA MEZZO: AUTOBUS / TRAM");
+            String input = scanner.nextLine().toUpperCase().trim();
+            TipoMezzoTrasporto tipo;
+            if (input.equals("AUTOBUS") || input.equals("BUS"))
+                tipo = TipoMezzoTrasporto.AUTOBUS;
+            else if (input.equals("TRAM")) {
+                tipo = TipoMezzoTrasporto.TRAM;
+            } else {
+                throw new InputErratoException("INPUT ERRATO! SOLO TRAM O BUS!");
+            }
+            System.out.println("Inserisci TEMPO PERCORRENZA");
+            double tempoPercorrenza;
+            int nPercorsaTratta;
+            try {
+                tempoPercorrenza = Double.parseDouble(scanner.nextLine());
+                if (tempoPercorrenza <= 0) {
+                    throw new NumberFormatException("INPUT NON VALIDO");
+                }
+                System.out.println("Inserisci numero di tratte percorse");
+                try {
+                    nPercorsaTratta = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    throw new InputErratoException("INPUT NON VALIDO");
+                }
+            } catch (NumberFormatException | InputErratoException ex) {
+                System.out.println(ex.getMessage());
+                return;
+            }
+            MezzoTrasporto mt = new MezzoTrasporto(tipo, tempoPercorrenza, nPercorsaTratta);
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(mt);
+            transaction.commit();
+            System.out.println("Mezzo salvato in DB!\nId: " + mt.getId());
+        } catch (ElementoEsistenteException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    public void updateStato( StatoMezzoTrasportoDAO std){
+        Scanner scanner = new Scanner(System.in);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            System.out.println("Inserisci ID mezzo di trasporto:");
+            int mezzoId;
+            try {
+                mezzoId = Integer.parseInt(scanner.nextLine());
+                if (mezzoId <= 0) {
+                    throw new NumberFormatException("ID non valido");
+                }
+            } catch (NumberFormatException e) {
+                throw new InputErratoException("INSERISCI SOLO NUMERI");
+            }
+            System.out.println("Inserisci nuovo stato: IN_SERVIZIO / FUORI_SERVIZIO / IN_MANUTENZIONE");
+            String inputStato = scanner.nextLine().toUpperCase().trim();
+            Stato nuovoStato;
+            if (inputStato.equals("IN_SERVIZIO") || inputStato.equals("INSERVIZIO")) {
+                nuovoStato = Stato.IN_SERVIZIO;
+            } else if (inputStato.equals("FUORI_SERVIZIO") || inputStato.equals("FUORISERVIZIO")) {
+                nuovoStato = Stato.FUORI_SERVIZIO;
+            } else if (inputStato.equals("IN_MANUTENZIONE") || inputStato.equals("INMANUTENZIONE")) {
+                nuovoStato = Stato.IN_MANUTENZIONE;
+            } else {
+                throw new InputErratoException("STATO NON VALIDO! SOLO: IN_SERVIZIO, FUORI_SERVIZIO o IN_MANUTENZIONE");
+            }
+            transaction.begin();
+            MezzoTrasporto mezzo = entityManager.find(MezzoTrasporto.class, mezzoId);
+            if (mezzo != null) {
+                mezzo.setStato(nuovoStato);
+                entityManager.merge(mezzo);
+                transaction.commit();
+                System.out.println("Stato di " + mezzoId + " : " + nuovoStato);
+                std.creaSalva(nuovoStato, mezzo);
+            } else {
+                throw  new ElementoNonTrovatoException("ELEMENTO NON TROVATO IN DB");
+            }
+        } catch (InputErratoException | ElementoNonTrovatoException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    }
+
