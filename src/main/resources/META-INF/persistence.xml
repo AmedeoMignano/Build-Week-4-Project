@@ -7,6 +7,9 @@
     <persistence-unit name="bw4pu">
         <class>amedeo.mignano.entities.User</class>
         <class>amedeo.mignano.entities.Card</class>
+        <class>amedeo.mignano.entities.Venditore</class>
+        <class>amedeo.mignano.entities.Rivenditore</class>
+        <class>amedeo.mignano.entities.Distributore</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/bw4db"/>

@@ -7,6 +7,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+import amedeo.mignano.dao.VenditoreDAO;
+import amedeo.mignano.entities.Rivenditore;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import java.util.UUID;
 
 public class Application {
 
@@ -16,6 +22,15 @@ public class Application {
         EntityManager em = emf.createEntityManager();
         Scanner scanner = new Scanner(System.in);
         UserDAO us = new UserDAO(em);
+        var em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(new Rivenditore(UUID.randomUUID()));
+        em.getTransaction().commit();
+        em.close();
+
+
+        VenditoreDAO dao = new VenditoreDAO();
+        dao.menu();
 
         try {
             String name;
