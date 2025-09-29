@@ -2,9 +2,10 @@
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
              xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
-
-
     <persistence-unit name="bw4pu">
+        <class>amedeo.mignano.entities.Tratta</class>
+        <class>amedeo.mignano.entities.MezzoTrasporto</class>
+        <class>amedeo.mignano.entities.StatoMezzoTrasporto</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/bw4db"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
