@@ -55,7 +55,7 @@ public class User {
     public String toString() {
         return "ID: " + id + "\n" +
                 "Name: " + name + "\n" +
-                "Surame: " + surname + "\n" +
+                "Surname: " + surname + "\n" +
                 "Born date: " + born_date + "\n" +
                 "Card ID: " + card + "\n";
     }
