@@ -32,10 +32,7 @@ public class Application {
 
 
 
-        em.getTransaction().begin();
-        em.persist(new Rivenditore());
-        em.getTransaction().commit();
-        em.close();
+
         
 
 
@@ -104,8 +101,8 @@ public class Application {
 //            emf.close();
 //        }
         //menu venditori
-        VenditoreDAO dao = new VenditoreDAO();
-        dao.menu();
+        VenditoreDAO vd = new VenditoreDAO(em);
+        vd.menu();
 
 
 //        //creazione utente

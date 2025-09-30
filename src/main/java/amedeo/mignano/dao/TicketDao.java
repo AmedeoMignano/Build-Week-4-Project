@@ -163,7 +163,7 @@ public class TicketDao {
     // counter per biglietti in determinato intervallo di tempo
     public long countByPeriodo(LocalDate start, LocalDate end) {
         TypedQuery<Long> query = em.createQuery(
-                "SELECT COuNT (t) FROM Ticket t WHERE t.datavendita BETWEEN :start and :end", Long.class);
+                "SELECT COUNT (t) FROM Ticket t WHERE t.dataVendita BETWEEN :start and :end", Long.class);
 
         query.setParameter("start", start);
         query.setParameter("end", end);
