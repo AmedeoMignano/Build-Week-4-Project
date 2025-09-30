@@ -18,13 +18,17 @@ public class Application {
         EntityManager em = emf.createEntityManager();
         MezzoTrasportoDAO mtd = new MezzoTrasportoDAO(em);
         StatoMezzoTrasportoDAO smtd = new StatoMezzoTrasportoDAO(em);
+        TrattaDAO td = new TrattaDAO(em);
+        mtd.creaSalva();
+        mtd.updateStato(smtd);
+        td.creaSalva();
       
 
-        var em = emf.createEntityManager();
+        /*var em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(new Rivenditore(UUID.randomUUID()));
         em.getTransaction().commit();
-        em.close();
+        em.close();*/
 
 
         VenditoreDAO dao = new VenditoreDAO();

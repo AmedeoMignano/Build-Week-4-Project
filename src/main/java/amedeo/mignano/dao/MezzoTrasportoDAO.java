@@ -3,7 +3,6 @@ package amedeo.mignano.dao;
 import amedeo.mignano.entities.MezzoTrasporto;
 import amedeo.mignano.entities.enums.Stato;
 import amedeo.mignano.entities.enums.TipoMezzoTrasporto;
-import amedeo.mignano.exceptions.ElementoEsistenteException;
 import amedeo.mignano.exceptions.ElementoNonTrovatoException;
 import amedeo.mignano.exceptions.InputErratoException;
 import jakarta.persistence.EntityManager;
@@ -19,12 +18,12 @@ public class MezzoTrasportoDAO {
         this.entityManager = entityManager;
     }
 
-    public void creaSalva(){
+    public void creaSalva() {
         Scanner scanner = new Scanner(System.in);
+        TipoMezzoTrasporto tipo;
         try {
             System.out.println("Inserisci TIPOLOGIA MEZZO: AUTOBUS / TRAM");
             String input = scanner.nextLine().toUpperCase().trim();
-            TipoMezzoTrasporto tipo;
             if (input.equals("AUTOBUS") || input.equals("BUS"))
                 tipo = TipoMezzoTrasporto.AUTOBUS;
             else if (input.equals("TRAM")) {
@@ -32,34 +31,16 @@ public class MezzoTrasportoDAO {
             } else {
                 throw new InputErratoException("INPUT ERRATO! SOLO TRAM O BUS!");
             }
-            System.out.println("Inserisci TEMPO PERCORRENZA");
-            double tempoPercorrenza;
-            int nPercorsaTratta;
-            try {
-                tempoPercorrenza = Double.parseDouble(scanner.nextLine());
-                if (tempoPercorrenza <= 0) {
-                    throw new NumberFormatException("INPUT NON VALIDO");
-                }
-                System.out.println("Inserisci numero di tratte percorse");
-                try {
-                    nPercorsaTratta = Integer.parseInt(scanner.nextLine());
-                } catch (NumberFormatException e) {
-                    throw new InputErratoException("INPUT NON VALIDO");
-                }
-            } catch (NumberFormatException | InputErratoException ex) {
-                System.out.println(ex.getMessage());
-                return;
-            }
-            MezzoTrasporto mt = new MezzoTrasporto(tipo, tempoPercorrenza, nPercorsaTratta);
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.persist(mt);
-            transaction.commit();
-            System.out.println("Mezzo salvato in DB!\nId: " + mt.getId());
-        } catch (ElementoEsistenteException ex) {
+        } catch (NumberFormatException | InputErratoException ex) {
             System.out.println(ex.getMessage());
+            return;
         }
-
+        MezzoTrasporto mt = new MezzoTrasporto(tipo);
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.persist(mt);
+        transaction.commit();
+        System.out.println("Mezzo salvato in DB!\nId: " + mt.getId());
     }
 
     public void updateStato( StatoMezzoTrasportoDAO std){
