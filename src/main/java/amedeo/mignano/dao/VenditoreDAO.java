@@ -60,7 +60,7 @@ public class VenditoreDAO {
         EntityManager em = Application.emf.createEntityManager();
         em.getTransaction().begin();
 
-        Rivenditore r = new Rivenditore(UUID.randomUUID());
+        Rivenditore r = new Rivenditore();
         em.persist(r);
 
         em.getTransaction().commit();
@@ -91,7 +91,7 @@ public class VenditoreDAO {
         EntityManager em = Application.emf.createEntityManager();
         em.getTransaction().begin();
 
-        Distributore d = new Distributore(UUID.randomUUID(), attivo);
+        Distributore d = new Distributore();
         em.persist(d);
 
         em.getTransaction().commit();

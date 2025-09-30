@@ -170,6 +170,8 @@ public class TicketDao {
         return query.getSingleResult();
     }
 
+
+
     //counter biblietti stesso intervallo ma di un solo venditore
     public List<Object[]> countPerVenditore(LocalDate start,LocalDate end) {
         TypedQuery<Object[]> query = em.createQuery(
