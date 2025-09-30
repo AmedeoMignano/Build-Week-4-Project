@@ -1,11 +1,10 @@
 package amedeo.mignano.dao;
 
+import amedeo.mignano.entities.MezzoTrasporto;
 import amedeo.mignano.entities.Tratta;
-import amedeo.mignano.exceptions.ElementoEsistenteException;
 import amedeo.mignano.exceptions.ElementoNonTrovatoException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -35,21 +34,56 @@ public class TrattaDAO {
                 System.out.println(ex.getMessage());
                 return;
             }
-            TypedQuery<Tratta> query = entityManager.createQuery("SELECT t FROM Tratta t WHERE LOWER(t.capolinea) LIKE LOWER(:capolinea) AND LOWER(t.partenza) LIKE LOWER(:partenza)", Tratta.class).setParameter("capolinea", capolinea).setParameter("partenza", partenza);
-            Tratta tratta = query.getSingleResultOrNull();
-            if (tratta != null) {
-                throw  new ElementoEsistenteException("TRATTA GIà PRESENTE IN DB!");
+
+            System.out.println("Inserisci TEMPO PERCORRENZA EFFETTIVO");
+            String tempoEffettivoInput = scanner.nextLine();
+            double tempoPercorrenzaEffettivo;
+            try {
+                tempoPercorrenzaEffettivo = Double.parseDouble(tempoEffettivoInput);
+                if (tempoPercorrenzaEffettivo <= 0) {
+                    throw new NumberFormatException("INPUT NON VALIDO");
+                }
+            } catch (NumberFormatException ex) {
+                System.out.println(ex.getMessage());
+                return;
             }
-             Tratta t = new Tratta(capolinea, partenza, tempoPercorrenzaPrevisto);
+
+            int nVolteTrattaPercorsa;
+            try {
+                System.out.println("Inserisci numero di volte che la tratta viene percorsa: ");
+                nVolteTrattaPercorsa = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException ex) {
+                System.out.println("INSERISCI SOLO NUMERI");
+                return;
+            }
+
+            MezzoTrasporto elTrovato;
+            try {
+                System.out.println("Inserisci ID mezzo di trasporto: ");
+                int id = Integer.parseInt(scanner.nextLine());
+                elTrovato = entityManager.find(MezzoTrasporto.class, id);
+                if (elTrovato == null) {
+                    throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID INCORRETTO");
+                }
+            } catch (NumberFormatException ex) {
+                System.out.println("INSERISCI SOLO NUMERI");
+                return;
+            } catch (ElementoNonTrovatoException ex) {
+                System.out.println(ex.getMessage());
+                return;
+            }
+
+            Tratta t = new Tratta(capolinea, partenza, tempoPercorrenzaPrevisto, tempoPercorrenzaEffettivo, nVolteTrattaPercorsa, elTrovato);
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(t);
+            elTrovato.getTratte().add(t);
+            entityManager.merge(elTrovato);
             transaction.commit();
             System.out.println("Tratta salvata in DB!\nId: " + t.getId());
-        } catch (ElementoEsistenteException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-            scanner.close();
     }
 
     public Tratta getById(String id) {
@@ -60,11 +94,8 @@ public class TrattaDAO {
                 throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID NON CORRETTO");
             }
             return elTrovato;
-        }  catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID NON CORRETTO");
         }
-    };
-
-
-
+    }
 }
