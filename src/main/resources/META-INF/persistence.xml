@@ -9,9 +9,11 @@
         <class>amedeo.mignano.entities.Venditore</class>
         <class>amedeo.mignano.entities.Rivenditore</class>
         <class>amedeo.mignano.entities.Distributore</class>
-        <class>amedeo.mignano.entities.Venditore</class>
-        <class>amedeo.mignano.entities.Rivenditore</class>
-        <class>amedeo.mignano.entities.Distributore</class>
+        <class>amedeo.mignano.entities.User</class>
+        <class>amedeo.mignano.entities.Card</class>
+        <class>amedeo.mignano.entities.Ticket</class>
+        <class>amedeo.mignano.entities.Biglietto</class>
+        <class>amedeo.mignano.entities.Abbonamento</class>
 
 
         <properties>
