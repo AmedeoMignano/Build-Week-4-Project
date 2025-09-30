@@ -3,7 +3,7 @@ package amedeo.mignano.entities;
 import amedeo.mignano.entities.enums.Tipologia;
 import jakarta.persistence.*;
 
-import javax.smartcardio.Card;
+
 import java.time.LocalDate;
 
 @Entity
