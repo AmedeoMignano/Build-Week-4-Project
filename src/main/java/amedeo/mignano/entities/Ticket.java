@@ -40,6 +40,10 @@ public abstract class Ticket {
         this.dataScadenza = dataScadenza;
     }
 
+    public Ticket(Venditore venditore, LocalDate dataVendita) {
+        this.venditore = venditore;
+        this.dataVendita = dataVendita;
+    }
 
     public UUID getId() {
         return id;
