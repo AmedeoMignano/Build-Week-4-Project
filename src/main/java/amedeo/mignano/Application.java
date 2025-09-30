@@ -19,12 +19,7 @@ public class Application {
         MezzoTrasportoDAO mtd = new MezzoTrasportoDAO(em);
         StatoMezzoTrasportoDAO smtd = new StatoMezzoTrasportoDAO(em);
         TrattaDAO td = new TrattaDAO(em);
-
-       mtd.updateStato(smtd);
-       /*  td.creaSalva();
-      mtd.creaSalva(smtd);
-
-        var em = emf.createEntityManager();
+        
         em.getTransaction().begin();
         em.persist(new Rivenditore(UUID.randomUUID()));
         em.getTransaction().commit();
@@ -32,6 +27,6 @@ public class Application {
 
 
         VenditoreDAO dao = new VenditoreDAO();
-        dao.menu();*/
+        dao.menu();
     }
 }
