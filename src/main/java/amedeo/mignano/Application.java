@@ -28,25 +28,7 @@ public class Application {
         em.persist(new Rivenditore(UUID.randomUUID()));
         em.getTransaction().commit();
         em.close();
-
-        TicketDao td = new TicketDao(em);
-        boolean ciclo = true;
-        while (ciclo) {
-            System.out.println("inserisci 1 per biglietteria, 0 per uscire");
-            int scelta = Integer.parseInt(scanner.nextLine());
-
-            try {
-                switch (scelta){
-                    case 1 -> td.creaTicket();
-                    case 0 -> ciclo = false;
-                    default -> System.out.println("scelta non valida");
-                }
-            }catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-
-
-        }
+        
 
 
 //        VenditoreDAO dao = new VenditoreDAO();
