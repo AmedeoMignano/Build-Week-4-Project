@@ -57,12 +57,12 @@ while (true) {
     }
 }
     }
-    
+
     // Metodi dei menu e delle creazioni
 
     public static void ticketMenu() {
         boolean run = true;
-        while (true) {
+        while (run) {
             System.out.println("\n--- Menu Ticket ---");
             System.out.println("1. Crea Biglietto");
             System.out.println("2. Crea Abbonamento");
@@ -465,6 +465,8 @@ while (true) {
             System.out.println("1. Aggiungi mezzo di trasporto");
             System.out.println("2. Update stato mezzo di trasporto");
             System.out.println("3. Inserisci nuova tratta");
+            System.out.println("4. Inserisci venditore");
+            System.out.println("5. Visualizza statistiche");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
             String scelta = scanner.nextLine();
@@ -476,6 +478,8 @@ while (true) {
                     updateStatoMezzo(smtd);
                 }
                 case "3" ->  creaTratta();
+                case "4" ->  menuVenditori();
+                case "5" ->  menustatistiche();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }

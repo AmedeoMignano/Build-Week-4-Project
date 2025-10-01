@@ -8,8 +8,6 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class TrattaDAO {
