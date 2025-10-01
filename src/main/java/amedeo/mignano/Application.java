@@ -3,6 +3,7 @@ package amedeo.mignano;
 import amedeo.mignano.dao.*;
 import amedeo.mignano.entities.*;
 import amedeo.mignano.entities.enums.Tipologia;
+import amedeo.mignano.exceptions.InputErratoException;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +29,31 @@ public class Application {
     public static CardDAO cd = new CardDAO(em);
 
     public static void main(String[] args) {
+while (true) {
+    try {
+        System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE");
+        int scelta = Integer.parseInt(scanner.nextLine());
+        switch (scelta) {
+            case 1 :
+                //ADMIN
+                break;
+            case 2 :
+                menuUtente();
+                break;
+            case 0 :
+                return;
+            default:
+                throw  new InputErratoException("SOLO NUMERI 1/2");
+        }
+    } catch (NumberFormatException ex) {
+        System.out.println("SOLO INPUT NUMERICO");
+    } catch (InputErratoException ex) {
+        System.out.println(ex.getMessage());
+
+    }
+}
+
+
 
     }
 
@@ -62,9 +88,7 @@ public class Application {
                 return;
             }
             Venditore venditore = optVend.get();
-
             LocalDate now = LocalDate.now();
-
             Biglietto biglietto = new Biglietto(venditore, now);
             ticketDao.salvaBiglietto(biglietto);
             System.out.println("Biglietto con id: " + biglietto.getId() + " acquistato con successo");
@@ -84,7 +108,6 @@ public class Application {
                 return;
             }
             Venditore venditore = optVend.get();
-
             System.out.println("Seleziona tipologia abbonamento (SETTIMANALE/MENSILE):");
             String tipo = scanner.nextLine();
             if (!tipo.equalsIgnoreCase("SETTIMANALE") && !tipo.equalsIgnoreCase("MENSILE")) {
@@ -213,12 +236,9 @@ public class Application {
             Card card = new Card(LocalDate.now(), LocalDate.now().plusYears(1), false, LocalDate.now());
             card.setUser(user);
             user.setCard(card);
-
             uDao.saveUser(user);
-
             System.out.println("Utente " + user.getName() + " aggiunto con successo con card valida fino al "
                     + card.getDue_date());
-
         } catch (Exception e) {
             System.out.println("Errore durante la creazione utente: " + e.getMessage());
         }
@@ -233,7 +253,6 @@ public class Application {
                 System.out.println("Uscita dal rinnovo tessera.");
                 break;
             }
-
             try {
                 Optional<Card> optionalCard = Optional.ofNullable(em.find(Card.class, UUID.fromString(idCard)));
                 if (optionalCard.isEmpty()) {
@@ -243,13 +262,41 @@ public class Application {
                 Card card = optionalCard.get();
 
                 cd.rinnovaCard(card);
-
             } catch (IllegalArgumentException e) {
                 System.out.println("Inserisci un UUID valido");
                 System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
             } catch (Exception e) {
                 System.out.println("Errore durante l'aggiornamento card: " + e.getMessage());
                 break;
+            }
+        }
+    }
+
+    public static void menuUtente(){
+        boolean running = true;
+        while (running) {
+            try {
+            System.out.println("\n--- Menu Utente ---");
+            System.out.println("1. Registra utente");
+            System.out.println("2. Rinnova card");
+            System.out.println("3. Sali sul bus");
+            System.out.println("4. Biglietteria");
+            System.out.println("0. Torna indietro");
+            System.out.print("Scelta: ");
+            String scelta = scanner.nextLine();
+            switch (scelta) {
+                case "1" -> {
+                    creaUtente();
+                }
+                case "2" -> {
+                    rinnovaCardMenu();
+                }
+                case "3" -> {System.out.println("BELLO");}
+                case "4" -> ticketMenu();
+                case "0" -> running = false;
+                default ->  throw  new InputErratoException("INPUT NON VALIDO");
+            }} catch (InputErratoException ex) {
+                System.out.println(ex.getMessage());
             }
         }
     }
