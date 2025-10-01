@@ -17,34 +17,6 @@ public class VenditoreDAO {
         this.em = em;
     }
 
-    public void menu() {
-        boolean running = true;
-        while (running) {
-            System.out.println("\n--- Menu Venditori ---");
-            System.out.println("1. Aggiungi rivenditore");
-            System.out.println("2. Aggiungi distributore");
-            System.out.println("3. Mostra tutti i venditori");
-            System.out.println("0. Esci");
-            System.out.print("Scelta: ");
-
-            try {
-                int scelta = Integer.parseInt(scanner.nextLine().trim());
-                switch (scelta) {
-                    case 1 -> aggiungiRivenditore();
-                    case 2 -> aggiungiDistributore();
-                    case 3 -> mostraVenditori();
-                    case 0 -> {
-                        running = false;
-                        System.out.println("Uscita dal menu venditori.");
-                    }
-                    default -> System.out.println("Scelta non valida, riprova.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Input non valido, inserisci un numero.");
-            }
-        }
-    }
-
     public Rivenditore aggiungiRivenditore(Rivenditore r) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();

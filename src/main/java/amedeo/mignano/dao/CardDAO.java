@@ -3,8 +3,8 @@ package amedeo.mignano.dao;
 import amedeo.mignano.entities.Card;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+
 import java.time.LocalDate;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class CardDAO {
@@ -14,51 +14,25 @@ public class CardDAO {
         this.em = em;
     }
 
-    public void cardUpdate() {
-        Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.print("\nInserisci l'ID della tessera (UUID) o premi 0 per uscire: ");
-            String input = scanner.nextLine();
+    public void salvaCard(Card card) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.persist(card);
+        tx.commit();
+    }
 
-            if (input.equalsIgnoreCase("0")) {
-                System.out.println("Uscita dall'aggiornamento card.");
-                break;
-            }
+    public void aggiornaCard(Card card) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.merge(card);
+        tx.commit();
+    }
 
-            UUID cardId;
-            try {
-                cardId = UUID.fromString(input);
-            } catch (IllegalArgumentException e) {
-                System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
-                continue;
-            }
-
-            EntityTransaction tx = em.getTransaction();
-            try {
-                tx.begin();
-
-                Card card = em.find(Card.class, cardId);
-                if (card == null) {
-                    System.out.println("Nessuna card trovata con ID: " + cardId);
-                    tx.rollback();
-                    continue;
-                } else {
-                    card.setDue_date(LocalDate.now().plusYears(1));
-                    card.setRenewal_date(LocalDate.now());
-                    card.setExpired(false);
-
-                    System.out.println("Card aggiornata correttamente:\n" + card);
-                }
-
-                tx.commit();
-                break;
-
-            } catch (Exception e) {
-                if (tx.isActive()) tx.rollback();
-                e.printStackTrace();
-                break;
-            }
-        }
+    public void rinnovaCard(Card card) {
+        card.setDue_date(LocalDate.now().plusYears(1));
+        card.setRenewal_date(LocalDate.now());
+        card.setExpired(false);
+        aggiornaCard(card);
     }
 }

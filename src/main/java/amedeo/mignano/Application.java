@@ -19,30 +19,20 @@ public class Application {
     public static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("bw4pu");
     public static EntityManager em = emf.createEntityManager();
     public static Scanner scanner = new Scanner(System.in);
-    public static UserDAO us = new UserDAO(em);
+    public static UserDAO uDao = new UserDAO(em);
     public static TicketDao ticketDao = new TicketDao(em);
     public static VenditoreDAO vd = new VenditoreDAO(em);
     public static MezzoTrasportoDAO mtd = new MezzoTrasportoDAO(em);
     public static StatoMezzoTrasportoDAO smtd = new StatoMezzoTrasportoDAO(em);
     public static TrattaDAO td = new TrattaDAO(em);
+    public static CardDAO cd = new CardDAO(em);
 
     public static void main(String[] args) {
 
-        //dao.menu();
-        //us.newUser();
-        //tic.readCardAndValidate();
-        //c.cardUpdate();
-
-        
+    }
 
 
-
-        }
-
-
-
-
-        // Metodi dei menu e delle creazioni
+    // Metodi dei menu e delle creazioni
 
     public static void ticketMenu() {
         boolean run = true;
@@ -62,12 +52,12 @@ public class Application {
         }
     }
 
-    public static void creaBiglietto(){
+    public static void creaBiglietto() {
         try {
             System.out.println("Inserisci l'id del venditore:");
             String venditoreId = scanner.nextLine();
             Optional<Venditore> optVend = Optional.ofNullable(em.find(Venditore.class, UUID.fromString(venditoreId)));
-            if(optVend.isEmpty()){
+            if (optVend.isEmpty()) {
                 System.out.println("Venditore non presente");
                 return;
             }
@@ -78,17 +68,18 @@ public class Application {
             Biglietto biglietto = new Biglietto(venditore, now);
             ticketDao.salvaBiglietto(biglietto);
             System.out.println("Biglietto con id: " + biglietto.getId() + " acquistato con successo");
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println("Inserisci un UUID valido");
-            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129"); }
+            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+        }
     }
 
-    public static void creaAbbonamento(){
+    public static void creaAbbonamento() {
         try {
             System.out.println("Inserisci l'id del venditore:");
             String venditoreId = scanner.nextLine();
             Optional<Venditore> optVend = Optional.ofNullable(em.find(Venditore.class, UUID.fromString(venditoreId)));
-            if(optVend.isEmpty()){
+            if (optVend.isEmpty()) {
                 System.out.println("Venditore non presente");
                 return;
             }
@@ -96,7 +87,7 @@ public class Application {
 
             System.out.println("Seleziona tipologia abbonamento (SETTIMANALE/MENSILE):");
             String tipo = scanner.nextLine();
-            if(!tipo.equalsIgnoreCase("SETTIMANALE") && !tipo.equalsIgnoreCase("MENSILE")){
+            if (!tipo.equalsIgnoreCase("SETTIMANALE") && !tipo.equalsIgnoreCase("MENSILE")) {
                 System.out.println("Scelta non valida, scegli tra SETTIMANALE o MENSILE");
                 return;
             }
@@ -172,8 +163,97 @@ public class Application {
                 default -> System.out.println("Scelta non valida, riprova.");
             }
         }
+    }
+
+    public static void creaUtente() {
+        try {
+            String name;
+            while (true) {
+                System.out.print("Inserisci il nome utente: ");
+                name = scanner.nextLine().trim();
+                if (!name.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
+                    System.out.println("Il nome non può contenere numeri o caratteri speciali.\n");
+                } else break;
+            }
+
+            String surname;
+            while (true) {
+                System.out.print("Inserisci il cognome utente: ");
+                surname = scanner.nextLine().trim();
+                if (!surname.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
+                    System.out.println("Il cognome non può contenere numeri o caratteri speciali.\n");
+                } else break;
+            }
+
+            LocalDate bornDate;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            while (true) {
+                System.out.print("Inserisci la data di nascita (YYYY-MM-DD): ");
+                String date = scanner.nextLine().trim();
+
+                if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    System.out.println("Formato non valido. Usa YYYY-MM-DD.\n");
+                    continue;
+                }
+
+                try {
+                    bornDate = LocalDate.parse(date, formatter);
+                    int year = bornDate.getYear();
+                    if (year < 1950 || year > LocalDate.now().getYear()) {
+                        System.out.println("L'anno deve essere compreso tra il 1950 e l'anno corrente!\n");
+                        continue;
+                    }
+                    break;
+                } catch (DateTimeParseException e) {
+                    System.out.println("Data non valida. Verifica giorno e mese.\n");
+                }
+            }
+
+            User user = new User(name, surname, bornDate);
+            Card card = new Card(LocalDate.now(), LocalDate.now().plusYears(1), false, LocalDate.now());
+            card.setUser(user);
+            user.setCard(card);
+
+            uDao.saveUser(user);
+
+            System.out.println("Utente " + user.getName() + " aggiunto con successo con card valida fino al "
+                    + card.getDue_date());
+
+        } catch (Exception e) {
+            System.out.println("Errore durante la creazione utente: " + e.getMessage());
         }
     }
+
+    public static void rinnovaCardMenu() {
+        while (true) {
+            System.out.print("Inserisci l'ID della tessera o premi 0 per uscire:");
+            String idCard = scanner.nextLine();
+
+            if (idCard.equalsIgnoreCase("0")) {
+                System.out.println("Uscita dal rinnovo tessera.");
+                break;
+            }
+
+            try {
+                Optional<Card> optionalCard = Optional.ofNullable(em.find(Card.class, UUID.fromString(idCard)));
+                if (optionalCard.isEmpty()) {
+                    System.out.println("Tessera non presente");
+                    return;
+                }
+                Card card = optionalCard.get();
+
+                cd.rinnovaCard(card);
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Inserisci un UUID valido");
+                System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+            } catch (Exception e) {
+                System.out.println("Errore durante l'aggiornamento card: " + e.getMessage());
+                break;
+            }
+        }
+    }
+}
 
 
 
