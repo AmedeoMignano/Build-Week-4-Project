@@ -11,6 +11,9 @@ public class Application {
 
     public static void main(String[] args) {
         EntityManager em = emf.createEntityManager();
+        Scanner scanner = new Scanner(System.in);
+
+        //DAO
         MezzoTrasportoDAO mtd = new MezzoTrasportoDAO(em);
         StatoMezzoTrasportoDAO smtd = new StatoMezzoTrasportoDAO(em);
         UserDAO us = new UserDAO(em);
@@ -18,22 +21,17 @@ public class Application {
         VenditoreDAO dao = new VenditoreDAO(em);
         TrattaDAO td = new TrattaDAO(em);
         TicketDao tic = new TicketDao(em);
-        em.getTransaction().begin();
-        //em.persist(new Rivenditore(UUID.randomUUID()));
-        em.getTransaction().commit();
-        Scanner scanner = new Scanner(System.in);
         TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
-
 
         //em.getTransaction().begin();
         //em.persist(new Rivenditore(UUID.randomUUID()));
         //em.getTransaction().commit();
-        //Scanner scanner = new Scanner(System.in);
 
+        //METODI
         //dao.menu();
         //us.newUser();
         //tic.readCardAndValidate();
-        //c.cardUpdate();
+        c.cardUpdate();
 
         em.close();
         emf.close();
