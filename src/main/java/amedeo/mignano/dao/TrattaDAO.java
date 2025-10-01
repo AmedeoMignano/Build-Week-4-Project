@@ -19,35 +19,13 @@ public class TrattaDAO {
         this.entityManager = entityManager;
     }
 
-    public void creaSalva() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            System.out.println("Inserisci PARTENZA");
-            String partenza = scanner.nextLine();
-            System.out.println("Inserisci CAPOLINEA");
-            String capolinea = scanner.nextLine();
-            System.out.println("Inserisci TEMPO PERCORRENZA PREVISTO");
-            String tempoInput = scanner.nextLine();
-            double tempoPercorrenzaPrevisto;
-            try {
-                tempoPercorrenzaPrevisto = Double.parseDouble(tempoInput);
-                if (tempoPercorrenzaPrevisto <= 0) {
-                    throw new NumberFormatException("INPUT NON VALIDO");
-                }
-            } catch (NumberFormatException ex) {
-                System.out.println(ex.getMessage());
-                return;
-            }
-
+    public void creaSalva( String partenza, String capolinea, double tempoPercorrenzaPrevisto) {
             Tratta t = new Tratta(capolinea, partenza, tempoPercorrenzaPrevisto);
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(t);
             transaction.commit();
             System.out.println("Tratta salvata in DB!\nId: " + t.getId());
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 
     public Tratta getById(String id) {
