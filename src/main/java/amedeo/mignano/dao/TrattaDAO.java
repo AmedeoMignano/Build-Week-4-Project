@@ -5,6 +5,10 @@ import amedeo.mignano.entities.Tratta;
 import amedeo.mignano.exceptions.ElementoNonTrovatoException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -97,5 +101,23 @@ public class TrattaDAO {
         } catch (IllegalArgumentException e) {
             throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID NON CORRETTO");
         }
+    }
+
+    public void calcoloTrattaMezzoAvg(UUID trattaId, int mezzoId){
+        TypedQuery<Object[]> query = entityManager.createQuery("SELECT t.mezzoTrasporto, COUNT(t), AVG(t.tempoPercorrenzaEffettivo)" +
+                        "FROM Tratta t" +
+                        "WHERE t.id = :trattaId" +
+                        "AND t.mezzoTrasporto.id = :mezzoId" +
+                        "GROUP BY t.mezzoTrasporto",
+                        Object[].class
+                );
+        query.setParameter("trattaId", trattaId);
+        query.setParameter("mezzoId", mezzoId);
+        List<Object[]> results = query.getResultList();
+
+        if(results.isEmpty()){
+            System.out.println("Nessuna percorrenza trovata per questo mezzo su questa tratta");
+        }
+        
     }
 }
