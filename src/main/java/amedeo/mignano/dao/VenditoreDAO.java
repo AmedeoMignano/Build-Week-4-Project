@@ -45,25 +45,17 @@ public class VenditoreDAO {
         }
     }
 
-    public void aggiungiRivenditore() {
+    public Rivenditore aggiungiRivenditore(Rivenditore r) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-        Rivenditore r = new Rivenditore();
         em.persist(r);
         tx.commit();
         System.out.println("Rivenditore aggiunto con id: " + r.getId());
+        return r;
     }
 
-    public void aggiungiDistributore() {
-        System.out.print("Distributore attivo? (true/false): ");
-        boolean attivo = Boolean.parseBoolean(scanner.nextLine().trim());
-
+    public void aggiungiDistributore(Distributore d) {
         EntityTransaction tx = em.getTransaction();
-
-        tx.begin();
-
-        Distributore d = new Distributore();
-        d.setAttivo(attivo); // importante settare i campi letti da input
         em.persist(d);
         tx.commit();
         System.out.println("Distributore aggiunto con id: " + d.getId());

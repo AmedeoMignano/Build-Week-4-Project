@@ -118,6 +118,6 @@ public class TrattaDAO {
         if(results.isEmpty()){
             System.out.println("Nessuna percorrenza trovata per questo mezzo su questa tratta");
         }
-        
+
     }
 }
