@@ -8,8 +8,7 @@ import java.util.*;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "name")
@@ -56,7 +55,6 @@ public class User {
         return "ID: " + id + "\n" +
                 "Name: " + name + "\n" +
                 "Surname: " + surname + "\n" +
-                "Born date: " + born_date + "\n" +
-                "Card ID: " + card + "\n";
+                "Born date: " + born_date + "\n";
     }
 }

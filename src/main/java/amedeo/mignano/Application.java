@@ -28,6 +28,10 @@ public class Application {
 
     public static void main(String[] args) {
 
+        //dao.menu();
+        //us.newUser();
+        //tic.readCardAndValidate();
+        //c.cardUpdate();
 
         
 

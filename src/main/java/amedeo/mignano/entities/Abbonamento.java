@@ -44,6 +44,7 @@ public class Abbonamento extends Ticket{
                 ", dataVendita=" + dataVendita +
                 ", dataValidazione=" + dataValidazione +
                 ", dataScadenza=" + dataScadenza +
+                ", Scaduto: " + getCard().isExpired() +
                 '}';
     }
 }
