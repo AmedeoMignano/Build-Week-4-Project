@@ -19,11 +19,6 @@ public class MezzoTrasporto {
     @Enumerated(EnumType.STRING)
     private Stato stato;
 
-    @OneToMany(mappedBy = "mezzoTrasporto")
-    private List<StatoMezzoTrasporto> stati = new ArrayList<>();
-    @OneToMany(mappedBy = "mezzoTrasporto")
-    private List<Tratta> tratte = new ArrayList<>();
-
 
     public MezzoTrasporto(){};
     public MezzoTrasporto(TipoMezzoTrasporto tipoMezzoTrasporto){
@@ -54,9 +49,7 @@ public class MezzoTrasporto {
     public void setStato(Stato stato) {
         this.stato = stato;
     }
-    public List<Tratta> getTratte() {
-        return tratte;
-    }
+
 
     @Override
     public String toString() {
@@ -65,8 +58,6 @@ public class MezzoTrasporto {
                 ", tipoMezzoTrasporto=" + tipoMezzoTrasporto +
                 ", capienza=" + capienza +
                 ", stato=" + stato +
-                ", stati=" + stati +
-                ", tratte=" + tratte +
                 '}';
     }
 }
