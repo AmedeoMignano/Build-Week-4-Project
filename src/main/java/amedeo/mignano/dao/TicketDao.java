@@ -100,8 +100,7 @@ public class TicketDao {
     // biglietti validati su un determinato mezzo
     public long countBigliettiValidatiByMezzo(int mezzoId) {
         TypedQuery<Long> query = em.createQuery(
-                "SELECT COUNT(b) FROM BIGLIETTO b" +
-                        "WHERE b.validazione = true AND b.mezzo.id = :mezzoID",
+                "SELECT COUNT(b) FROM Biglietto b WHERE b.validazione = true AND b.mezzo.id = :mezzoId",
                 Long.class
 
         );
@@ -110,17 +109,17 @@ public class TicketDao {
     }
 
     // biglietti calidati in un determinato periodo
-    public long countBigliettiValidatiInPeriodo( LocalDate start, LocalDate end) {
+    public long countBigliettiValidatiInPeriodo( LocalDate start, LocalDate end, int mezzoId) {
         TypedQuery<Long> query = em.createQuery(
                 "SELECT COUNT(b) FROM Biglietto b " +
-                        "WHERE b.validazioe = true " +
-                        "AND b.mezzo.id = :mezzoID " +
+                        "WHERE b.validazione = true " +
+                        "AND b.mezzo.id = :mezzoId " +
                         "AND b.dataValidazione BETWEEN :start AND :end",
                 Long.class
         );
-
         query.setParameter("start",start);
         query.setParameter("end",end);
+        query.setParameter("mezzoId", mezzoId);
         return query.getSingleResult();
 
     }
@@ -128,16 +127,11 @@ public class TicketDao {
     public EntityManager getEntityManager() { return em; }
     // biglietti validati su un determinato mezzo in un determinato periodo
 
-    public long countBigliettiValidatiByMezzoAndPeriodo(int mezzoId, LocalDate start, LocalDate end) {
+    public long countBigliettiValidati() {
         TypedQuery<Long> query = em.createQuery(
-                "SELECT COUNT(b) FROM Biglietto b " +
-                        "WHERE b.validazione = true " +
-                        "AND b.dataValidazione BETWEEN :start AND :end",
+                "SELECT COUNT(b) FROM Biglietto b WHERE b.validazione = true " ,
                 Long.class
         );
-        query.setParameter("mezzoId", mezzoId);
-        query.setParameter("start", start);
-        query.setParameter("end", end);
         return query.getSingleResult();
     }
 }

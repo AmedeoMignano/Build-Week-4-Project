@@ -319,8 +319,8 @@ while (true) {
         while (running) {
             System.out.println("Menu per statistiche biglietti");
             System.out.println("1. conta biglietti validati per mezzo");
-            System.out.println("2. conta biglietti validati per periodo");
-            System.out.println("3. conta biglietti validati per mezzo in un periodo");
+            System.out.println("2. conta biglietti validati in un mezzo per periodo");
+            System.out.println("3. conta biglietti validati"); //AGGIUNGI LE DUE QUERY DELLE TRATTE E PERCORRENZE
             System.out.println("0. esci ");
             System.out.println("scelta: ");
 
@@ -329,7 +329,7 @@ while (true) {
                 switch (scelta) {
                     case 1 -> contaPerMezzo();
                     case 2 -> contaPerPeriodo();
-                    case 3 -> contaPerMezzoEPeriodo();
+                    case 3 -> contaBigliettiValidati();
                     case 0 -> {
                         running = false;
                         System.out.println("uscita dal menu statistiche");
@@ -352,36 +352,28 @@ while (true) {
        }
     }
     private static void contaPerPeriodo() {
-     try {
-         System.out.println("inserisci data inizio (YYY-MM-DD): ");
-         LocalDate start = LocalDate.parse(scanner.nextLine());
-         System.out.println("inserisci data fine (YYY-MM-DD): ");
-         LocalDate end = LocalDate.parse(scanner.nextLine());
-         long result = ticketDao.countBigliettiValidatiInPeriodo(start, end);
-         System.out.println("biglietti validati tra " + start + "e " + end + ": " + result);
-     }catch (InputErratoException e){
-         System.out.println("Inserisci un formato valido");
-     }catch (Exception e){
+        try {
+            System.out.println("inserisci data inizio (YYY-MM-DD): ");
+            LocalDate start = LocalDate.parse(scanner.nextLine());
+            System.out.println("inserisci data fine (YYY-MM-DD): ");
+            LocalDate end = LocalDate.parse(scanner.nextLine());
+            int mezzoId;
+            System.out.println("Inserisci ID mezzo di trasporto:");
+            mezzoId = Integer.parseInt(scanner.nextLine());
+            long result = ticketDao.countBigliettiValidatiInPeriodo(start, end, mezzoId);
+            System.out.println("biglietti validati tra " + start + "e " + end + ": " + result);
+        } catch (InputErratoException e) {
+            System.out.println("Inserisci un formato valido");
+        } catch (NumberFormatException ex) {
+            System.out.println("SOLO NUMERI");
+    }catch (Exception e){
          System.out.println(e.getMessage());
      }
     }
 
-    private static void contaPerMezzoEPeriodo() {
-       try {
-           System.out.println("inserisci id del mezzo: ");
-           int mezzoId = Integer.parseInt(scanner.nextLine());
-           System.out.println("inserisci data inizio (YYY-MM-DD): ");
-           LocalDate start = LocalDate.parse(scanner.nextLine());
-           System.out.println("inserisci data fine (YYY-MM-DD): ");
-           LocalDate end = LocalDate.parse(scanner.nextLine());
-           long result = ticketDao.countBigliettiValidatiByMezzoAndPeriodo(mezzoId, start, end);
-           System.out.println("biglietti validati sul mezzo " + mezzoId +
-                   "tra " + start + "e " + end + ": " + result);
-       }catch (InputErratoException e){
-           System.out.println("Inserisci un formato valido");
-       }catch (Exception e){
-           System.out.println(e.getMessage());
-       }
+    private static void contaBigliettiValidati() {
+           long result = ticketDao.countBigliettiValidati();
+           System.out.println("biglietti validati: " + result);
     }
     public static void creaMezzo(StatoMezzoTrasportoDAO std) {
         TipoMezzoTrasporto tipo;
