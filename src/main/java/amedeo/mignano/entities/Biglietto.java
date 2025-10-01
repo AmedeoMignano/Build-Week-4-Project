@@ -22,11 +22,10 @@ public class Biglietto extends Ticket{
 
     public Biglietto(){}
 
-    public Biglietto(Venditore venditore, LocalDate dataVendita, LocalDate dataValidazione, LocalDate dataScadenza, User user, MezzoTrasporto mezzo, boolean validazione) {
-        super(venditore, dataVendita, dataValidazione, dataScadenza);
+    public Biglietto(Venditore venditore, LocalDate dataVendita, User user) {
+        super(venditore, dataVendita);
         this.user = user;
-        this.mezzo = mezzo;
-        this.validazione = validazione;
+        this.validazione = false;
     }
 
     public User getUser() {
@@ -53,11 +52,12 @@ public class Biglietto extends Ticket{
         this.validazione = validazione;
     }
 
-    public void valida(){
+    public void valida(MezzoTrasporto mezzo){
         if(!this.validazione) {
             this.validazione = true;
             this.dataValidazione = LocalDate.now();
             this.dataScadenza = this.dataValidazione.plusDays(1);
+            this.mezzo = mezzo;
         }
     }
 }

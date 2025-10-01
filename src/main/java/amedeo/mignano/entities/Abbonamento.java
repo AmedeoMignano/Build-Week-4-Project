@@ -35,4 +35,16 @@ public class Abbonamento extends Ticket{
         return card;
     }
 
+    @Override
+    public String toString() {
+        return "Abbonamento{" +
+                "tipologia=" + tipologia +
+                ", card=" + card +
+                ", id=" + id +
+                ", dataVendita=" + dataVendita +
+                ", dataValidazione=" + dataValidazione +
+                ", dataScadenza=" + dataScadenza +
+                ", Scaduto: " + getCard().isExpired() +
+                '}';
+    }
 }
