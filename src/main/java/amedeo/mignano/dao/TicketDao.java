@@ -139,8 +139,7 @@ public class TicketDao {
 
     }
 
-    public EntityManager getEntityManager() {
-        return em;
+    public EntityManager getEntityManager() { return em; }
     // biglietti validati su un determinato mezzo in un determinato periodo
 
     public long countBigliettiValidatiByMezzoAndPeriodo(int mezzoId, LocalDate start, LocalDate end) {
