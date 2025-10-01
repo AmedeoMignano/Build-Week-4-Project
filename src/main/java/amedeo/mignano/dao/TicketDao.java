@@ -13,6 +13,8 @@ import java.util.UUID;
 public class TicketDao {
     private final EntityManager em;
 
+    private final Scanner scanner = new Scanner(System.in);
+
     public TicketDao(EntityManager em){
 
         this.em = em;
@@ -216,5 +218,108 @@ public class TicketDao {
         query.setParameter("start", start);
         query.setParameter("end", end);
         return query.getResultList();
+    }
+
+    // biglietti validati su un mezzo in un determinato periodo di tempo
+
+    // biglietti validati su un determinato mezzo
+    public long countBigliettiValidatiByMezzo(int mezzoId) {
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(b) FROM BIGLIETTO b" +
+                        "WHERE b.validazione = true AND b.mezzo.id = :mezzoID",
+                Long.class
+
+        );
+        query.setParameter("mezzoId", mezzoId);
+        return query.getSingleResult();
+    }
+
+    // biglietti calidati in un determinato periodo
+    public long countBigliettiValidatiInPeriodo( LocalDate start, LocalDate end) {
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(b) FROM Biglietto b " +
+                        "WHERE b.validazioe = true " +
+                        "AND b.mezzo.id = :mezzoID " +
+                        "AND b.dataValidazione BETWEEN :start AND :end",
+                Long.class
+        );
+
+        query.setParameter("start",start);
+        query.setParameter("end",end);
+        return query.getSingleResult();
+
+    }
+
+    // biglietti validati su un determinato mezzo in un determinato periodo
+
+    public long countBigliettiValidatiByMezzoAndPeriodo(int mezzoId, LocalDate start, LocalDate end) {
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(b) FROM Biglietto b " +
+                        "WHERE b.validazione = true " +
+                        "AND b.dataValidazione BETWEEN :start AND :end",
+                Long.class
+        );
+        query.setParameter("mezzoId", mezzoId);
+        query.setParameter("start", start);
+        query.setParameter("end", end);
+        return query.getSingleResult();
+    }
+
+    // menu statistiche a console
+    public void menustatistiche() {
+        boolean running = true;
+        while (running) {
+            System.out.println("Menu per statistiche biglietti");
+            System.out.println("1. conta biglietti validati per mezzo");
+            System.out.println("2. conta biglietti validati per periodo");
+            System.out.println("3. conta biglietti validati per mezzo in un periodo");
+            System.out.println("0. esci ");
+            System.out.println("scelta: ");
+
+            try {
+                int scelta = Integer.parseInt(scanner.nextLine().trim());
+                switch (scelta) {
+                    case 1 -> contaPerMezzo();
+                    case 2 -> contaPerPeriodo();
+                    case 3 -> contaPerMezzoEPeriodo();
+                    case 0 -> {
+                        running = false;
+                        System.out.println("uscita dal menu statistiche");
+                    }
+                    default -> System.out.println("scelta non valida riprova");
+                }
+            } catch (Exception e) {
+                System.out.println("Errore input " + e.getMessage());
+            }
+        }
+    }
+
+    // metodi per menu statistiche
+    private void contaPerMezzo() {
+        System.out.println("inserisci ID del mezzo");
+        int mezzoId = Integer.parseInt(scanner.nextLine());
+        long result = countBigliettiValidatiByMezzo(mezzoId);
+        System.out.println("Biglietti validati sul mezzo " + mezzoId + ": " + result);
+    }
+
+    private void contaPerPeriodo() {
+        System.out.println("inserisci data inizio (YYY-MM-DD): ");
+        LocalDate start = LocalDate.parse(scanner.nextLine());
+        System.out.println("inserisci data fine (YYY-MM-DD): ");
+        LocalDate end = LocalDate.parse(scanner.nextLine());
+        long result = countBigliettiValidatiInPeriodo(start, end);
+        System.out.println("biglietti validati tra " + start + "e " + end + ": " + result);
+    }
+
+    private void contaPerMezzoEPeriodo() {
+        System.out.println("inserisci id del mezzo: ");
+        int mezzoId = Integer.parseInt(scanner.nextLine());
+        System.out.println("inserisci data inizio (YYY-MM-DD): ");
+        LocalDate start = LocalDate.parse(scanner.nextLine());
+        System.out.println("inserisci data fine (YYY-MM-DD): ");
+        LocalDate end = LocalDate.parse(scanner.nextLine());
+        long result = countBigliettiValidatiByMezzoAndPeriodo(mezzoId, start, end);
+        System.out.println("biglietti validati sul mezzo " + mezzoId +
+                "tra " + start + "e " + end + ": " + result);
     }
 }

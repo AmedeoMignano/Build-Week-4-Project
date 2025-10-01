@@ -22,11 +22,18 @@ public class Application {
         //em.persist(new Rivenditore(UUID.randomUUID()));
         em.getTransaction().commit();
         Scanner scanner = new Scanner(System.in);
+        TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
+
+
+        //em.getTransaction().begin();
+        //em.persist(new Rivenditore(UUID.randomUUID()));
+        //em.getTransaction().commit();
+        //Scanner scanner = new Scanner(System.in);
 
         //dao.menu();
         //us.newUser();
         //tic.readCardAndValidate();
-        c.cardUpdate();
+        //c.cardUpdate();
 
         em.close();
         emf.close();
