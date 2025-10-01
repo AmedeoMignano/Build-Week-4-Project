@@ -10,9 +10,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "biglietti")
 public class Biglietto extends Ticket{
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @ManyToOne
     @JoinColumn(name = "mezzoditrasporto_id")
@@ -22,18 +19,9 @@ public class Biglietto extends Ticket{
 
     public Biglietto(){}
 
-    public Biglietto(Venditore venditore, LocalDate dataVendita, User user) {
+    public Biglietto(Venditore venditore, LocalDate dataVendita) {
         super(venditore, dataVendita);
-        this.user = user;
         this.validazione = false;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public MezzoTrasporto getMezzo() {
@@ -59,5 +47,15 @@ public class Biglietto extends Ticket{
             this.dataScadenza = this.dataValidazione.plusDays(1);
             this.mezzo = mezzo;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Biglietto{" +
+                "mezzo=" + mezzo +
+                ", validazione=" + validazione +
+                ", id=" + id +
+                ", dataVendita=" + dataVendita +
+                '}';
     }
 }
