@@ -14,6 +14,7 @@
         <class>amedeo.mignano.entities.Ticket</class>
         <class>amedeo.mignano.entities.Biglietto</class>
         <class>amedeo.mignano.entities.Abbonamento</class>
+        <class>amedeo.mignano.entities.TempiPercorrenza</class>
 
 
         <properties>

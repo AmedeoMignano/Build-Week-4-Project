@@ -20,10 +20,14 @@ public class Application {
         VenditoreDAO dao = new VenditoreDAO(em);
         TrattaDAO td = new TrattaDAO(em);
         TicketDao tic = new TicketDao(em);
-        em.getTransaction().begin();
-        em.persist(new Rivenditore(UUID.randomUUID()));
-        em.getTransaction().commit();
-        Scanner scanner = new Scanner(System.in);
+        TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
+
+
+        //em.getTransaction().begin();
+        //em.persist(new Rivenditore(UUID.randomUUID()));
+        //em.getTransaction().commit();
+        //Scanner scanner = new Scanner(System.in);
+
 
         //dao.menu();
         //us.newUser();
