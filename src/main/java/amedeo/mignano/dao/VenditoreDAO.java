@@ -17,53 +17,17 @@ public class VenditoreDAO {
         this.em = em;
     }
 
-    public void menu() {
-        boolean running = true;
-        while (running) {
-            System.out.println("\n--- Menu Venditori ---");
-            System.out.println("1. Aggiungi rivenditore");
-            System.out.println("2. Aggiungi distributore");
-            System.out.println("3. Mostra tutti i venditori");
-            System.out.println("0. Esci");
-            System.out.print("Scelta: ");
-
-            try {
-                int scelta = Integer.parseInt(scanner.nextLine().trim());
-                switch (scelta) {
-                    case 1 -> aggiungiRivenditore();
-                    case 2 -> aggiungiDistributore();
-                    case 3 -> mostraVenditori();
-                    case 0 -> {
-                        running = false;
-                        System.out.println("Uscita dal menu venditori.");
-                    }
-                    default -> System.out.println("Scelta non valida, riprova.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Input non valido, inserisci un numero.");
-            }
-        }
-    }
-
-    public void aggiungiRivenditore() {
+    public Rivenditore aggiungiRivenditore(Rivenditore r) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-        Rivenditore r = new Rivenditore();
         em.persist(r);
         tx.commit();
         System.out.println("Rivenditore aggiunto con id: " + r.getId());
+        return r;
     }
 
-    public void aggiungiDistributore() {
-        System.out.print("Distributore attivo? (true/false): ");
-        boolean attivo = Boolean.parseBoolean(scanner.nextLine().trim());
-
+    public void aggiungiDistributore(Distributore d) {
         EntityTransaction tx = em.getTransaction();
-
-        tx.begin();
-
-        Distributore d = new Distributore();
-        d.setAttivo(attivo); // importante settare i campi letti da input
         em.persist(d);
         tx.commit();
         System.out.println("Distributore aggiunto con id: " + d.getId());
