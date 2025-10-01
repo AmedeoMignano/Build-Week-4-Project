@@ -23,6 +23,7 @@ public class Application {
         em.getTransaction().commit();
         Scanner scanner = new Scanner(System.in);
         TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
+        mtd.stampaNPercorsaTratta();
 
 
         //em.getTransaction().begin();
