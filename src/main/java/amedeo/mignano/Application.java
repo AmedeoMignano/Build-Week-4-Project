@@ -300,6 +300,91 @@ while (true) {
             }
         }
     }
+    
+    public void readCardAndValidate() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Inserisci l'ID della tessera (UUID): ");
+        String input = scanner.nextLine();
+
+        try {
+            UUID cardId = UUID.fromString(input);
+            ticketDao.subValidity(cardId);
+        } catch (IllegalArgumentException e) {
+            System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+        }
+    }
+
+    public static void menustatistiche() {
+        boolean running = true;
+        while (running) {
+            System.out.println("Menu per statistiche biglietti");
+            System.out.println("1. conta biglietti validati per mezzo");
+            System.out.println("2. conta biglietti validati per periodo");
+            System.out.println("3. conta biglietti validati per mezzo in un periodo");
+            System.out.println("0. esci ");
+            System.out.println("scelta: ");
+
+            try {
+                int scelta = Integer.parseInt(scanner.nextLine().trim());
+                switch (scelta) {
+                    case 1 -> contaPerMezzo();
+                    case 2 -> contaPerPeriodo();
+                    case 3 -> contaPerMezzoEPeriodo();
+                    case 0 -> {
+                        running = false;
+                        System.out.println("uscita dal menu statistiche");
+                    }
+                    default -> System.out.println("scelta non valida riprova");
+                }
+            } catch (Exception e) {
+                System.out.println("Errore input " + e.getMessage());
+            }
+        }
+    }
+    private static void contaPerMezzo() {
+       try {
+           System.out.println("inserisci ID del mezzo");
+           int mezzoId = Integer.parseInt(scanner.nextLine());
+           long result = ticketDao.countBigliettiValidatiByMezzo(mezzoId);
+           System.out.println("Biglietti validati sul mezzo " + mezzoId + ": " + result);
+       }catch (NumberFormatException ex){
+           System.out.println(ex.getMessage());
+       }
+    }
+    private static void contaPerPeriodo() {
+     try {
+         System.out.println("inserisci data inizio (YYY-MM-DD): ");
+         LocalDate start = LocalDate.parse(scanner.nextLine());
+         System.out.println("inserisci data fine (YYY-MM-DD): ");
+         LocalDate end = LocalDate.parse(scanner.nextLine());
+         long result = ticketDao.countBigliettiValidatiInPeriodo(start, end);
+         System.out.println("biglietti validati tra " + start + "e " + end + ": " + result);
+     }catch (InputErratoException e){
+         System.out.println("Inserisci un formato valido");
+     }catch (Exception e){
+         System.out.println(e.getMessage());
+     }
+    }
+
+    private static void contaPerMezzoEPeriodo() {
+       try {
+           System.out.println("inserisci id del mezzo: ");
+           int mezzoId = Integer.parseInt(scanner.nextLine());
+           System.out.println("inserisci data inizio (YYY-MM-DD): ");
+           LocalDate start = LocalDate.parse(scanner.nextLine());
+           System.out.println("inserisci data fine (YYY-MM-DD): ");
+           LocalDate end = LocalDate.parse(scanner.nextLine());
+           long result = ticketDao.countBigliettiValidatiByMezzoAndPeriodo(mezzoId, start, end);
+           System.out.println("biglietti validati sul mezzo " + mezzoId +
+                   "tra " + start + "e " + end + ": " + result);
+       }catch (InputErratoException e){
+           System.out.println("Inserisci un formato valido");
+       }catch (Exception e){
+           System.out.println(e.getMessage());
+       }
+    }
+
+
 }
 
 
