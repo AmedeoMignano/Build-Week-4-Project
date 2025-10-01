@@ -55,7 +55,6 @@ public class User {
         return "ID: " + id + "\n" +
                 "Name: " + name + "\n" +
                 "Surname: " + surname + "\n" +
-                "Born date: " + born_date + "\n" +
-                "Card ID: " + card + "\n";
+                "Born date: " + born_date + "\n";
     }
 }

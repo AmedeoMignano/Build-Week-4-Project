@@ -63,7 +63,8 @@ public class UserDAO {
             }
 
             User user = new User(name, surname, born_date);
-            Card card = new Card(LocalDate.now(), LocalDate.now().plusYears(1), false);
+            Card card = new Card(LocalDate.now(), LocalDate.now().plusYears(1), false, LocalDate.now());
+            card.setUser(user);
             user.setCard(card);
 
             EntityTransaction t = em.getTransaction();

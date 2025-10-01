@@ -3,7 +3,6 @@ package amedeo.mignano.dao;
 import amedeo.mignano.entities.*;
 import amedeo.mignano.entities.enums.Tipologia;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
