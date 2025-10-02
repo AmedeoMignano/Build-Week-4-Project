@@ -83,11 +83,13 @@ public class Application {
             System.out.println("\n--- Menu Admin ---");
             System.out.println("1. Aggiungi mezzo di trasporto");
             System.out.println("2. Update stato mezzo di trasporto");
-            System.out.println("3. Inserisci nuova tratta");
-            System.out.println("4. Inserisci venditore");
-            System.out.println("5. Visualizza statistiche");
-            System.out.println("6. Collega Bus/Tram a tratta");
-            System.out.println("7. Controlla Abbonamento" );
+            System.out.println("3. Controlla periodi SERVIZIO/MANUTENZIONE mezzo");
+            System.out.println("4. Cerca mezzo per STATO/PERIODO");
+            System.out.println("5. Inserisci nuova tratta");
+            System.out.println("6. Inserisci venditore");
+            System.out.println("7. Visualizza statistiche");
+            System.out.println("8. Collega Bus/Tram a tratta");
+            System.out.println("9. Controlla Abbonamento" );
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
             String scelta = scanner.nextLine();
@@ -95,11 +97,13 @@ public class Application {
             switch (scelta) {
                 case "1" -> creaMezzo(smtd);
                 case "2" -> updateStatoMezzo(smtd);
-                case "3" -> creaTratta();
-                case "4" -> menuVenditori();
-                case "5" -> menustatistiche();
-                case "6" -> collegaBusTratta();
-                case "7" -> readCardAndValidate();
+                case "3" -> stampaPeriodiMezzo();
+                case "4" -> cercaMezziPerStatoPeriodo();
+                case "5" -> creaTratta();
+                case "6" -> menuVenditori();
+                case "7" -> menustatistiche();
+                case "8" -> collegaBusTratta();
+                case "9" -> readCardAndValidate();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
@@ -208,6 +212,8 @@ public class Application {
             System.out.println("2. Aggiungi Distributore");
             System.out.println("3. Mostra Venditori");
             System.out.println("4. Acquista biglietti e abbonamenti");
+            System.out.println("5. Mostra biglietti venduti per venditore");
+            System.out.println("6. Mostra biglietti venduti per venditore/periodo");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
 
@@ -239,6 +245,8 @@ public class Application {
                 }
                 case "3" -> vd.mostraVenditori();
                 case "4" -> ticketMenu();
+                case "5" -> reportBigliettiVenditore();
+                case "6" -> reportBigliettiVenditorePeriodo();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
@@ -658,4 +666,129 @@ public class Application {
             System.out.println("Formato UUID non valido.");
         }
     }
+    public static void reportBigliettiVenditorePeriodo() {
+        try {
+            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            UUID venditoreId = UUID.fromString(scanner.nextLine());
+
+            System.out.println("Inserisci la data di inizio (formato: yyyy-MM-dd): ");
+            LocalDate start = LocalDate.parse(scanner.nextLine());
+
+            System.out.println("Inserisci la data di fine (formato: yyyy-MM-dd): ");
+            LocalDate end = LocalDate.parse(scanner.nextLine());
+
+            List<Object[]> results = ticketDao.countPerVenditorePerPeriodo(venditoreId, start, end);
+
+            if (results.isEmpty()) {
+                System.out.println("Nessun biglietto venduto da questo venditore nel periodo selezionato.");
+            } else {
+                Object[] row = results.get(0);
+                Venditore v = (Venditore) row[0];
+                Long count = (Long) row[1];
+
+                System.out.println("Venditore ID: " + v.getId());
+                System.out.println("Biglietti venduti nel periodo: " + count);
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+        } catch (Exception e) {
+            System.out.println("Errore: " + e.getMessage());
+        }
+    }
+
+    public static void reportBigliettiVenditore() {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            UUID venditoreId = UUID.fromString(scanner.nextLine());
+
+            List<Object[]> results = ticketDao.countPerVenditore(venditoreId);
+
+            if (results.isEmpty()) {
+                System.out.println("Nessun biglietto venduto da questo venditore.");
+            } else {
+                Object[] row = results.get(0);
+                Venditore v = (Venditore) row[0];
+                Long count = (Long) row[1];
+
+                System.out.println("Venditore ID: " + v.getId());
+                System.out.println("Biglietti venduti totali: " + count);
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("UUID non valido. Usa il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+        } catch (Exception e) {
+            System.out.println("Errore: " + e.getMessage());
+        }
+    }
+
+    public static void stampaPeriodiMezzo() {
+        try {
+            System.out.print("Inserisci ID del mezzo: ");
+            int id = scanner.nextInt();
+
+            MezzoTrasporto mezzo = mtd.getEntityManager().find(MezzoTrasporto.class, id);
+            if (mezzo == null) {
+                throw new ElementoNonTrovatoException("Mezzo non trovato con ID: " + id);
+            }
+
+            List<StatoMezzoTrasporto> periodi = mtd.getPeriodiMezzo(id);
+            if (periodi.isEmpty()) {
+                System.out.println("Nessun periodo registrato per questo mezzo.");
+            } else {
+                System.out.println("Periodi per il mezzo " + id + ":");
+                for (StatoMezzoTrasporto s : periodi) {
+                    String fine = (s.getDataFine() != null) ? s.getDataFine().toString() : "Ancora attivo";
+                    System.out.println("Stato: " + s.getStato() + ", Inizio: " + s.getDataInizio() + ", Fine: " + fine);
+                }
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Errore: inserire un numero intero valido per l'ID.");
+            scanner.nextLine(); // pulisce buffer
+        } catch (ElementoNonTrovatoException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Errore inatteso: " + e.getMessage());
+        }
+    }
+
+    public static void cercaMezziPerStatoPeriodo() {
+        try {
+            System.out.print("Inserisci stato (IN_SERVIZIO / IN_MANUTENZIONE): ");
+            Stato stato = Stato.valueOf(scanner.nextLine().toUpperCase());
+
+            System.out.print("Inserisci data inizio (YYYY-MM-DD): ");
+            LocalDate inizio = LocalDate.parse(scanner.nextLine());
+
+            System.out.print("Inserisci data fine (YYYY-MM-DD): ");
+            LocalDate fine = LocalDate.parse(scanner.nextLine());
+
+            if (fine.isBefore(inizio)) {
+                System.out.println("Errore: la data fine non può essere precedente alla data inizio.");
+                return;
+            }
+
+            List<MezzoTrasporto> mezzi = mtd.getMezziByStatoPeriodo(stato, inizio, fine);
+            if (mezzi.isEmpty()) {
+                System.out.println("Nessun mezzo trovato per lo stato e il periodo indicato.");
+            } else {
+                System.out.println("Mezzi trovati:");
+                for (MezzoTrasporto m : mezzi) {
+                    System.out.println(m);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Errore: stato inserito non valido. Usa IN_SERVIZIO o IN_MANUTENZIONE.");
+        } catch (DateTimeParseException e) {
+            System.out.println("Errore: formato data non valido. Usa YYYY-MM-DD.");
+        } catch (Exception e) {
+            System.out.println("Errore inatteso: " + e.getMessage());
+        }
+    }
+
+
+
+
 }

@@ -73,5 +73,27 @@ public class MezzoTrasportoDAO {
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    public List<StatoMezzoTrasporto> getPeriodiMezzo(int mezzoId) {
+        return entityManager.createQuery(
+                        "SELECT s FROM StatoMezzoTrasporto s WHERE s.mezzoTrasporto.id = :mezzoId ORDER BY s.dataInizio ASC",
+                        StatoMezzoTrasporto.class)
+                .setParameter("mezzoId", mezzoId)
+                .getResultList();
+    }
+
+    public List<MezzoTrasporto> getMezziByStatoPeriodo(Stato stato, LocalDate inizio, LocalDate fine) {
+        return entityManager.createQuery(
+                        "SELECT DISTINCT s.mezzoTrasporto FROM StatoMezzoTrasporto s " +
+                                "WHERE s.stato = :stato AND " +
+                                "(s.dataInizio BETWEEN :inizio AND :fine OR " +
+                                "(s.dataFine IS NOT NULL AND s.dataFine BETWEEN :inizio AND :fine))",
+                        MezzoTrasporto.class)
+                .setParameter("stato", stato)
+                .setParameter("inizio", inizio)
+                .setParameter("fine", fine)
+                .getResultList();
+    }
+
 }
 
