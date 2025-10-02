@@ -36,7 +36,6 @@ public class MezzoTrasportoDAO {
 
     public void updateStato( StatoMezzoTrasportoDAO std, int mezzoId, Stato nuovoStato){
         EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
             MezzoTrasporto mezzo = entityManager.find(MezzoTrasporto.class, mezzoId);
             if (mezzo != null) {
                 List<StatoMezzoTrasporto> statiAttivi = entityManager.createQuery("SELECT s FROM StatoMezzoTrasporto s WHERE s.mezzoTrasporto.id = :mezzoId AND s.dataFine IS NULL", StatoMezzoTrasporto.class)
@@ -49,6 +48,7 @@ public class MezzoTrasportoDAO {
                     System.out.println("Stato precedente AGGIORNATO");
                 }
                 mezzo.setStato(nuovoStato);
+                transaction.begin();
                 entityManager.merge(mezzo);
                 transaction.commit();
                 System.out.println("Stato di " + mezzoId + " : " + nuovoStato);

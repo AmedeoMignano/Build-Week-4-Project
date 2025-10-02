@@ -41,7 +41,7 @@ public class VenditoreDAO {
         if (venditori.isEmpty()) {
             System.out.println("Nessun venditore trovato.");
         } else {
-            System.out.println("--- Elenco venditori ---");
+            System.out.println("\n--- Elenco venditori ---");
             venditori.forEach(System.out::println);
         }
     }
