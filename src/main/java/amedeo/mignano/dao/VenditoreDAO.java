@@ -28,6 +28,7 @@ public class VenditoreDAO {
 
     public void aggiungiDistributore(Distributore d) {
         EntityTransaction tx = em.getTransaction();
+        tx.begin();
         em.persist(d);
         tx.commit();
         System.out.println("Distributore aggiunto con id: " + d.getId());

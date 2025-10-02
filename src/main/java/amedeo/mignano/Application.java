@@ -175,11 +175,22 @@ while (true) {
                 }
                 case "2" -> {
                     System.out.print("Distributore attivo? (true/false): ");
-                    boolean attivo = Boolean.parseBoolean(scanner.nextLine().trim());
-                    Distributore d = new Distributore();
-                    d.setAttivo(attivo);
-                    vd.aggiungiDistributore(d);
-                    System.out.println("Distributore creato con ID: " + d.getId());
+                    Distributore d ;
+                    try {
+                        String scelta3 = scanner.nextLine();
+                        if (scelta3.equals("true")) {
+                            d = new Distributore(true);
+                            vd.aggiungiDistributore(d);
+                            System.out.println("Distributore creato con ID: " + d.getId());
+                        } else if (scelta3.equals("false")) {
+                            d = new Distributore(false);
+                            vd.aggiungiDistributore(d);
+                            System.out.println("Distributore creato con ID: " + d.getId());
+                        }
+                          else { throw new InputErratoException("INPUT NON VALIDO");}
+                    } catch (InputErratoException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
                 case "3" -> vd.mostraVenditori();
                 case "0" -> running = false;

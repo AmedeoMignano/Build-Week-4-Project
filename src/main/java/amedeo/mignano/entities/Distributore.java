@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class Distributore extends Venditore{
 
-    @Column(name = "attivo", nullable = false)
+    @Column(name = "attivo")
     private boolean attivo;
 
     public Distributore() {}
