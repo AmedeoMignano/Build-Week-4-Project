@@ -32,11 +32,18 @@ public class Application {
     public static CardDAO cd = new CardDAO(em);
     public static  TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
 
+    //COLORI COLORATI COLORELLI
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String VERDE = "\u001B[32m";
+    public static  final String BLU = "\u001B[34m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String RESET = "\u001B[0m";
+
 
     public static void main(String[] args) {
 while (true) {
     try {
-        System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE");
+        System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE" );
         int scelta = Integer.parseInt(scanner.nextLine());
         switch (scelta) {
             case 1 :
