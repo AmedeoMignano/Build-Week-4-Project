@@ -70,5 +70,8 @@ public class MezzoTrasportoDAO {
         }
     }
 
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 }
 

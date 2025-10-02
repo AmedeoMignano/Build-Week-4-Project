@@ -35,4 +35,8 @@ public class CardDAO {
         card.setExpired(false);
         aggiornaCard(card);
     }
+
+    public EntityManager getEm() {
+        return em;
+    }
 }
