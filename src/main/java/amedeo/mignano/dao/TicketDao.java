@@ -31,6 +31,13 @@ public class TicketDao {
         tr.commit();
     }
 
+    public void aggiornaTicket(Ticket ticket) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.merge(ticket);
+        tx.commit();
+    }
+
     public void subValidity(UUID cardId) {
         EntityTransaction tx = em.getTransaction();
         try {

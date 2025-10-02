@@ -8,6 +8,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 public class TrattaDAO {
@@ -40,20 +41,17 @@ public class TrattaDAO {
     }
 
     public void calcoloTrattaMezzoAvg(UUID trattaId, int mezzoId){
-        TypedQuery<Object[]> query = entityManager.createQuery("SELECT t.mezzoTrasporto, COUNT(t), AVG(t.tempoPercorrenzaEffettivo)" +
-                        "FROM Tratta t" +
-                        "WHERE t.id = :trattaId" +
-                        "AND t.mezzoTrasporto.id = :mezzoId" +
-                        "GROUP BY t.mezzoTrasporto",
-                        Object[].class
-                );
-        query.setParameter("trattaId", trattaId);
-        query.setParameter("mezzoId", mezzoId);
-        List<Object[]> results = query.getResultList();
-
-        if(results.isEmpty()){
-            System.out.println("Nessuna percorrenza trovata per questo mezzo su questa tratta");
+        TypedQuery<Double> query = entityManager.createQuery(
+                "SELECT tp.tempoPercorrenzaEffettivo " +
+                        "FROM TempiPercorrenza tp " +
+                        "WHERE tp.tratta.id = :trattaId AND tp.mezzoTrasporto.id = :mezzoId",
+                Double.class
+        ).setParameter("trattaId", trattaId).setParameter("mezzoId", mezzoId);
+        List<Double> doubleList = query.getResultList();
+        if(doubleList.isEmpty()){
+            throw new ElementoNonTrovatoException("Nessuna percorrenza trovata per questo mezzo su questa tratta");
         }
-
+        double media = doubleList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        System.out.printf(STR."Media dei tempi effettivi di percorrenza: \{media}\n");
     }
 }

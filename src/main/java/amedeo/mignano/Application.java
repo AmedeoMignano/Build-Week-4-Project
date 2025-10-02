@@ -163,6 +163,7 @@ public class Application {
             System.out.println("1. Aggiungi Rivenditore");
             System.out.println("2. Aggiungi Distributore");
             System.out.println("3. Mostra Venditori");
+            System.out.println("4. Acquista biglietti e abbonamenti");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
 
@@ -175,13 +176,25 @@ public class Application {
                 }
                 case "2" -> {
                     System.out.print("Distributore attivo? (true/false): ");
-                    boolean attivo = Boolean.parseBoolean(scanner.nextLine().trim());
-                    Distributore d = new Distributore();
-                    d.setAttivo(attivo);
-                    vd.aggiungiDistributore(d);
-                    System.out.println("Distributore creato con ID: " + d.getId());
+                    Distributore d ;
+                    try {
+                        String scelta3 = scanner.nextLine();
+                        if (scelta3.equals("true")) {
+                            d = new Distributore(true);
+                            vd.aggiungiDistributore(d);
+                            System.out.println("Distributore creato con ID: " + d.getId());
+                        } else if (scelta3.equals("false")) {
+                            d = new Distributore(false);
+                            vd.aggiungiDistributore(d);
+                            System.out.println("Distributore creato con ID: " + d.getId());
+                        }
+                          else { throw new InputErratoException("INPUT NON VALIDO");}
+                    } catch (InputErratoException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
                 case "3" -> vd.mostraVenditori();
+                case "4" -> ticketMenu();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
@@ -365,8 +378,21 @@ public class Application {
         String input = scanner.nextLine();
 
         try {
-            UUID cardId = UUID.fromString(input);
-            ticketDao.subValidity(cardId);
+            System.out.println("Inserisci l'ID della tessera (UUID): ");
+            String cardId = scanner.nextLine();
+            Optional<Card> optC = Optional.ofNullable(cd.getEm().find(Card.class, UUID.fromString(cardId)));
+            if (optC.isEmpty()){
+                System.out.println("Card non trovata");
+                return;
+            }
+            Card card = optC.get();
+            User a = card.getUser();
+            if(a.getName().equalsIgnoreCase("Ajeje") && a.getSurname().equalsIgnoreCase("Brazorf")){
+                System.out.println("Controllore: Mi faccia vedere il biglietto, se ce l'ha");
+                System.out.println("Altrimenti le farò una contravvenzione");
+            }else{
+                ticketDao.subValidity(card.getId());
+            }
         } catch (IllegalArgumentException e) {
             System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
         }
@@ -463,6 +489,51 @@ public class Application {
 
         } catch (IllegalArgumentException e) {
             System.out.println("Formato UUID non valido.\n");
+        }
+    }
+
+    public static void saliSulMezzo(){
+        try {
+            System.out.println("Inserisci id del mezzo");
+            int mezzoId = Integer.parseInt(scanner.nextLine());
+            Optional<MezzoTrasporto> optM = Optional.ofNullable(mtd.getEntityManager().find(MezzoTrasporto.class, mezzoId));
+            if(optM.isEmpty()){
+                System.out.println("Mezzo non trovato");
+                return;
+            }
+            MezzoTrasporto mezzoTrasporto = optM.get();
+            if (mezzoTrasporto.getStato() == Stato.IN_SERVIZIO){
+                System.out.println("Scanerizza il biglietto");
+                String bigliettoId = scanner.nextLine();
+                Optional<Biglietto> optB = Optional.ofNullable(ticketDao.getEntityManager().find(Biglietto.class, UUID.fromString(bigliettoId)));
+                if (optB.isEmpty()){
+                    System.out.println("Biglietto Non Trovato");
+                    return;
+                }
+                Biglietto biglietto = optB.get();
+                if(biglietto.isValidazione()){
+                    System.out.println("Questo biglietto è già stato validato");
+                }else {
+                    System.out.println("validazione in corso");
+                    biglietto.setMezzo(mezzoTrasporto);
+                    biglietto.setValidazione(true);
+                    biglietto.setDataValidazione(LocalDate.now());
+                    biglietto.setDataScadenza(LocalDate.now().plusDays(1));
+
+                    ticketDao.aggiornaTicket(biglietto);
+                    System.out.println("Biglietto validato con successo");
+                }
+
+            }else {
+                System.out.println("Il mezzo non è attualmente in servizio");
+            }
+        }catch (NumberFormatException e){
+            System.out.println("INSERISCI UN NUMERO");
+        }catch (IllegalArgumentException e){
+            System.out.println("Inserisci un UUID valido");
+            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
