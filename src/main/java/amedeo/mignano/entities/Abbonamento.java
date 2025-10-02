@@ -42,7 +42,6 @@ public class Abbonamento extends Ticket{
                 ", card=" + card +
                 ", id=" + id +
                 ", dataVendita=" + dataVendita +
-                ", dataValidazione=" + dataValidazione +
                 ", dataScadenza=" + dataScadenza +
                 ", Scaduto: " + getCard().isExpired() +
                 '}';

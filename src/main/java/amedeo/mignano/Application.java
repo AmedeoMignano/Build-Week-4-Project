@@ -41,6 +41,7 @@ public class Application {
 
 
     public static void main(String[] args) {
+
 while (true) {
     try {
         System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE" );
@@ -529,6 +530,7 @@ case 5 -> stampaNumPercorsaTratta();
             System.out.println("4. Inserisci venditore");
             System.out.println("5. Visualizza statistiche");
             System.out.println("6. Collega Bus/Tram a tratta");
+            System.out.println("7. Controlla Abbonamento" );
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
             String scelta = scanner.nextLine();
@@ -543,6 +545,7 @@ case 5 -> stampaNumPercorsaTratta();
                 case "4" ->  menuVenditori();
                 case "5" ->  menustatistiche();
                 case "6" ->  collegaBusTratta();
+                case "7" ->  readCardAndValidate();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
