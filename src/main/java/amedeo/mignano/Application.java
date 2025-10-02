@@ -30,6 +30,7 @@ public class Application {
     public static StatoMezzoTrasportoDAO smtd = new StatoMezzoTrasportoDAO(em);
     public static TrattaDAO td = new TrattaDAO(em);
     public static CardDAO cd = new CardDAO(em);
+    public static  TempiPercorrenzaDAO tpd = new TempiPercorrenzaDAO(em);
 
 
     public static void main(String[] args) {
@@ -521,7 +522,8 @@ case 5 -> stampaNumPercorsaTratta();
             System.out.println("3. Inserisci nuova tratta");
             System.out.println("4. Inserisci venditore");
             System.out.println("5. Visualizza statistiche");
-            System.out.println("6. Controlla Abbonamento" );
+            System.out.println("6. Collega Bus/Tram a tratta");
+            System.out.println("7. Controlla Abbonamento" );
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
             String scelta = scanner.nextLine();
@@ -532,16 +534,64 @@ case 5 -> stampaNumPercorsaTratta();
                 case "2" -> {
                     updateStatoMezzo(smtd);
                 }
-                case "3" -> creaTratta();
-                case "4" -> menuVenditori();
-                case "5" -> menustatistiche();
-                case "6" -> readCardAndValidate();
+                case "3" ->  creaTratta();
+                case "4" ->  menuVenditori();
+                case "5" ->  menustatistiche();
+                case "6" ->  collegaBusTratta();
+                case "7" ->  readCardAndValidate()
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
         }
     }
 
+    //COLLEGARE TRATTA A BUS
+    public static void collegaBusTratta() {
+        MezzoTrasporto elTrovato;
+        try {
+            System.out.println("Inserisci ID mezzo di trasporto: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            elTrovato = em.find(MezzoTrasporto.class, id);
+            if (elTrovato == null) {
+                throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID INCORRETTO");
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println("INSERISCI SOLO NUMERI");
+            return;
+        } catch (ElementoNonTrovatoException ex) {
+            System.out.println(ex.getMessage());
+            return;
+        }
+        Tratta tTrovata;
+        try {
+            System.out.println("Inserisci ID tratta: ");
+            UUID id = UUID.fromString(scanner.nextLine());
+            tTrovata = em.find(Tratta.class, id);
+            if (tTrovata == null) {
+                throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID INCORRETTO");
+            }
+        } catch (ElementoNonTrovatoException ex) {
+            System.out.println(ex.getMessage());
+            return;
+        } catch (IllegalArgumentException ex) {
+            System.out.println("ID TRATTA ERRATO");
+            return;
+        }
+        System.out.println("Inserisci TEMPO PERCORRENZA EFFETTIVO");
+        String tempoEffettivoInput = scanner.nextLine();
+        double tempoPercorrenzaEffettivo;
+        try {
+            tempoPercorrenzaEffettivo = Double.parseDouble(tempoEffettivoInput);
+            if (tempoPercorrenzaEffettivo <= 0) {
+                throw new NumberFormatException("INPUT NON VALIDO");
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println(ex.getMessage());
+            return;
+        }
+        TempiPercorrenza tp = new TempiPercorrenza(tempoPercorrenzaEffettivo, elTrovato, tTrovata);
+        tpd.creaSalva(tp);
+    }
     public static void saliSulMezzo(){
         try {
             System.out.println("Inserisci id del mezzo");
