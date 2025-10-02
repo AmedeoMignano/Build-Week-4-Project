@@ -87,20 +87,37 @@ public class TicketDao {
         return query.getSingleResult();
     }
 
-    //counter biblietti stesso intervallo ma di un solo venditore
-    public List<Object[]> countPerVenditore(LocalDate start,LocalDate end) {
+    //counter biglietti stesso intervallo ma di un solo venditore
+    public Object[] countPerVenditorePeriodo(UUID venditoreId, LocalDate start, LocalDate end) {
         TypedQuery<Object[]> query = em.createQuery(
                 "SELECT v, COUNT(t) " +
                         "FROM Ticket t JOIN t.venditore v " +
-                        "WHERE t.dataVendita BETWEEN :start AND :end" +
+                        "WHERE v.id = :venditoreId " +
+                        "AND t.dataVendita BETWEEN :start AND :end " +
                         "GROUP BY v",
                 Object[].class
         );
 
+        query.setParameter("venditoreId", venditoreId);
         query.setParameter("start", start);
         query.setParameter("end", end);
+
+        return query.getResultStream().findFirst().orElse(null);
+    }
+    public List<Object[]> countPerVenditore(UUID venditoreId) {
+        TypedQuery<Object[]> query = em.createQuery(
+                "SELECT v, COUNT(t) " +
+                        "FROM Ticket t JOIN t.venditore v " +
+                        "WHERE v.id = :venditoreId " +
+                        "GROUP BY v",
+                Object[].class
+        );
+
+        query.setParameter("venditoreId", venditoreId);
+
         return query.getResultList();
     }
+
 
     // biglietti validati su un mezzo in un determinato periodo di tempo
 
@@ -115,7 +132,7 @@ public class TicketDao {
         return query.getSingleResult();
     }
 
-    // biglietti calidati in un determinato periodo
+    // biglietti validati in un determinato periodo
     public long countBigliettiValidatiInPeriodo( LocalDate start, LocalDate end, int mezzoId) {
         TypedQuery<Long> query = em.createQuery(
                 "SELECT COUNT(b) FROM Biglietto b " +

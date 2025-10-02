@@ -348,7 +348,7 @@ while (true) {
     public static void menustatistiche() {
         boolean running = true;
         while (running) {
-            System.out.println("Menu per statistiche biglietti");
+            System.out.println("\n --- Menu per statistiche biglietti --- ");
             System.out.println("1. conta biglietti validati per mezzo");
             System.out.println("2. conta biglietti validati in un mezzo per periodo");
             System.out.println("3. conta biglietti validati");
@@ -361,7 +361,7 @@ while (true) {
                 int scelta = Integer.parseInt(scanner.nextLine().trim());
                 switch (scelta) {
                     case 1 -> contaPerMezzo();
-                    case 2 -> contaPerPeriodo();
+                    case 2 -> contaPerPeriodoPermezzo();
                     case 3 -> contaBigliettiValidati();
                     case 4 -> calcoloTrattaMedia() ;
 case 5 -> stampaNumPercorsaTratta();
@@ -386,7 +386,7 @@ case 5 -> stampaNumPercorsaTratta();
            System.out.println(ex.getMessage());
        }
     }
-    private static void contaPerPeriodo() {
+    private static void contaPerPeriodoPermezzo() {
         try {
             System.out.println("inserisci data inizio (YYY-MM-DD): ");
             LocalDate start = LocalDate.parse(scanner.nextLine());
@@ -645,13 +645,76 @@ case 5 -> stampaNumPercorsaTratta();
     }
 
     public static void chiediPassword(){
-        String PASSWORD = "Admin";
-        System.out.println("Inserisci password amministratore:");
-        String pass = scanner.nextLine();
-        if(pass.equals(PASSWORD)){
-            menuAdmin();
-        }else {
-            System.out.println("Password errata");
+        try {
+            System.out.println("Inserisci password amministratore:");
+            final String PASSWORD = "Admin";
+            String pass = scanner.nextLine();
+            if(pass.equals(PASSWORD)){
+                menuAdmin();
+            }else {
+                System.out.println("Password errata");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void venditePerVenditorePerPeriodo() {
+        try {
+            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            UUID venditoreId = UUID.fromString(scanner.nextLine());
+
+            System.out.println("Inserisci la data di inizio (YYYY-MM-DD): ");
+            LocalDate start = LocalDate.parse(scanner.nextLine());
+
+            System.out.println("Inserisci la data di fine (YYYY-MM-DD): ");
+            LocalDate end = LocalDate.parse(scanner.nextLine());
+
+            Object[] result = ticketDao.countPerVenditorePeriodo(venditoreId, start, end);
+
+            if (result == null) {
+                System.out.println("Nessun biglietto venduto da questo venditore nel periodo selezionato.");
+            } else {
+                Venditore v = (Venditore) result[0];
+                Long count = (Long) result[1];
+
+                System.out.println("Venditore: " + v.getId() +
+                        "\nBiglietti venduti tra " + start + " e " + end + ": " + count);
+            }
+        }catch (IllegalArgumentException e){
+            System.out.println("Inserisci un UUID valido");
+            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void reportBigliettiVenditore() {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            UUID venditoreId = UUID.fromString(scanner.nextLine());
+
+            List<Object[]> results = ticketDao.countPerVenditore(venditoreId);
+
+            if (results.isEmpty()) {
+                System.out.println("Nessun biglietto venduto da questo venditore.");
+            } else {
+                Object[] row = results.get(0);
+                Venditore v = (Venditore) row[0];
+                Long count = (Long) row[1];
+
+                System.out.println("Venditore ID: " + v.getId());
+                System.out.println("Biglietti venduti totali: " + count);
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("UUID non valido. Usa il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+        } catch (Exception e) {
+            System.out.println("Errore: " + e.getMessage());
         }
     }
 
