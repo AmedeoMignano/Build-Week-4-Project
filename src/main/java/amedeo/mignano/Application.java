@@ -33,7 +33,7 @@ public class Application {
 
 
     public static void main(String[] args) {
-        
+        readCardAndValidate();
 while (true) {
     try {
         System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE");
@@ -302,14 +302,23 @@ while (true) {
         }
     }
     
-    public void readCardAndValidate() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Inserisci l'ID della tessera (UUID): ");
-        String input = scanner.nextLine();
-
+    public static void readCardAndValidate() {
         try {
-            UUID cardId = UUID.fromString(input);
-            ticketDao.subValidity(cardId);
+            System.out.println("Inserisci l'ID della tessera (UUID): ");
+            String cardId = scanner.nextLine();
+            Optional<Card> optC = Optional.ofNullable(cd.getEm().find(Card.class, UUID.fromString(cardId)));
+            if (optC.isEmpty()){
+                System.out.println("Card non trovata");
+                return;
+            }
+            Card card = optC.get();
+            User a = card.getUser();
+            if(a.getName().equalsIgnoreCase("Ajeje") && a.getSurname().equalsIgnoreCase("Brazorf")){
+                System.out.println("Controllore: Mi faccia vedere il biglietto, se ce l'ha");
+                System.out.println("Altrimenti le farò una contravvenzione");
+            }else{
+                ticketDao.subValidity(card.getId());
+            }
         } catch (IllegalArgumentException e) {
             System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
         }
