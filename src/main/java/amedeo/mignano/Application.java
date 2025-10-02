@@ -163,6 +163,7 @@ while (true) {
             System.out.println("1. Aggiungi Rivenditore");
             System.out.println("2. Aggiungi Distributore");
             System.out.println("3. Mostra Venditori");
+            System.out.println("4. Acquista biglietti e abbonamenti");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
 
@@ -182,6 +183,7 @@ while (true) {
                     System.out.println("Distributore creato con ID: " + d.getId());
                 }
                 case "3" -> vd.mostraVenditori();
+                case "4" -> ticketMenu();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
@@ -329,7 +331,9 @@ while (true) {
             System.out.println("Menu per statistiche biglietti");
             System.out.println("1. conta biglietti validati per mezzo");
             System.out.println("2. conta biglietti validati in un mezzo per periodo");
-            System.out.println("3. conta biglietti validati"); //AGGIUNGI LE DUE QUERY DELLE TRATTE E PERCORRENZE
+            System.out.println("3. conta biglietti validati");
+            System.out.println("4. calcola media tempi percorrenza per mezzo");
+            System.out.println("5. calcola n volte che un dato mezzo percorre una data tratta");
             System.out.println("0. esci ");
             System.out.println("scelta: ");
 
@@ -339,6 +343,8 @@ while (true) {
                     case 1 -> contaPerMezzo();
                     case 2 -> contaPerPeriodo();
                     case 3 -> contaBigliettiValidati();
+                    case 4 -> calcoloTrattaMedia() ;
+case 5 -> stampaNumPercorsaTratta();
                     case 0 -> {
                         running = false;
                         System.out.println("uscita dal menu statistiche");
@@ -455,6 +461,41 @@ while (true) {
             }
             td.creaSalva(partenza,capolinea,tempoPercorrenzaPrevisto);
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static void calcoloTrattaMedia(){
+        try {
+            System.out.println("Inserisci Id tratta: ");
+            UUID trattaId = UUID.fromString(scanner.nextLine());
+            System.out.println("Inserisci Id mezzo: ");
+            int mezzoId = Integer.parseInt(scanner.nextLine());
+            td.calcoloTrattaMezzoAvg(trattaId, mezzoId);
+        } catch (NumberFormatException ex) {
+            System.out.println("ID NON VALIDO");
+        } catch (ElementoNonTrovatoException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static void stampaNumPercorsaTratta() {
+        try {
+            System.out.println("Inserisci ID mezzo di trasporto:");
+            int mezzoId = Integer.parseInt(scanner.nextLine());
+            System.out.println("Inserisci ID tratta:");
+            UUID trattaId = UUID.fromString(scanner.nextLine());
+            MezzoTrasporto mezzo = em.find(MezzoTrasporto.class, mezzoId);
+            Tratta tratta = em.find(Tratta.class, trattaId);
+            if (mezzo == null || tratta == null) {
+                throw new ElementoNonTrovatoException("MEZZO O TRATTA NON TROVATI IN DB");
+            }
+            mtd.stampaNPercorsaTratta(mezzo, tratta);
+        } catch (NumberFormatException e) {
+            System.out.println("ID NON VALIDO");
+        } catch (IllegalArgumentException e) {
+            System.out.println("ID NON CORRETTO");
+        } catch (ElementoNonTrovatoException ex) {
             System.out.println(ex.getMessage());
         }
     }
