@@ -57,47 +57,18 @@ public class MezzoTrasportoDAO {
                 throw  new ElementoNonTrovatoException("ELEMENTO NON TROVATO IN DB");
     } }
 
-    public void stampaNPercorsaTratta() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            System.out.println("Inserisci ID mezzo di trasporto:");
-            int mezzoId;
-            try {
-                mezzoId = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                throw new InputErratoException("INSERISCI SOLO NUMERI");
-            }
-            System.out.println("Inserisci ID tratta:");
-            UUID trattaId;
-            try {
-                trattaId = UUID.fromString(scanner.nextLine());
-            } catch (IllegalArgumentException e) {
-                throw new InputErratoException("ID NON VALIDO");
-            }
-            MezzoTrasporto mezzo = entityManager.find(MezzoTrasporto.class, mezzoId);
-            if (mezzo == null) {
-                throw new ElementoNonTrovatoException("MEZZO DI TRASPORTO NON TROVATO IN DB");
-            }
-            Tratta tratta = entityManager.find(Tratta.class, trattaId);
-            if (tratta == null) {
-                throw new ElementoNonTrovatoException("TRATTA NON TROVATA IN DB");
-            }
-            List<TempiPercorrenza> tempiPercorrenza = entityManager.createQuery(
-                            "SELECT tp FROM TempiPercorrenza tp WHERE tp.mezzoTrasporto.id = :mezzoId AND tp.tratta.id = :trattaId ORDER BY tp.tempoPercorrenzaEffettivo", TempiPercorrenza.class)
-                    .setParameter("mezzoId", mezzoId)
-                    .setParameter("trattaId", trattaId)
-                    .getResultList();
+    public void stampaNPercorsaTratta(MezzoTrasporto mezzo, Tratta tratta) {
+        List<TempiPercorrenza> tempiPercorrenza = entityManager.createQuery(
+                        "SELECT tp FROM TempiPercorrenza tp WHERE tp.mezzoTrasporto.id = :mezzoId AND tp.tratta.id = :trattaId ORDER BY tp.tempoPercorrenzaEffettivo",
+                        TempiPercorrenza.class).setParameter("mezzoId", mezzo.getId()).setParameter("trattaId", tratta.getId()).getResultList();
+
+        if (tempiPercorrenza.isEmpty()) {
+            System.out.println("NESSUNA TRATTA REGISTRATA PER QUESTO MEZZO TRASPORTO");
+        } else {
             int nPercorsaTratta = tempiPercorrenza.size();
-            if (tempiPercorrenza.isEmpty()) {
-                System.out.println("NESSUNA TRATTA REGISTRATA PER QUESTO MEZZO TRASPORTO");
-            } else {
-            System.out.println("Volte che il mezzo di trasporto ha percorso la tratta:  " + nPercorsaTratta);
-               List<Double> tpPercEffett = tempiPercorrenza.stream().map(TempiPercorrenza::getTempoPercorrenzaEffettivo).toList();
-               tpPercEffett.forEach(System.out::println);
-            }
-        } catch (InputErratoException | ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+                    System.out.println(" Numero di volte che il mezzo di trasporto ha percorso la tratta: " + nPercorsaTratta);
         }
     }
-    }
+
+}
 
