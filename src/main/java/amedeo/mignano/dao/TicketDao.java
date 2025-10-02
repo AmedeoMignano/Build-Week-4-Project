@@ -45,8 +45,8 @@ public class TicketDao {
             TypedQuery<Abbonamento> query = em.createQuery(
                     "SELECT a FROM Abbonamento a " +
                             "JOIN a.card c " +
-                            "WHERE c.id = :card_id",
-                    Abbonamento.class).setParameter("card_id", cardId);
+                            "WHERE c.id = :card_id AND a.dataScadenza >= :now",
+                    Abbonamento.class).setParameter("card_id", cardId).setParameter("now", LocalDate.now());
 
             List<Abbonamento> sub = query.getResultList();
 
