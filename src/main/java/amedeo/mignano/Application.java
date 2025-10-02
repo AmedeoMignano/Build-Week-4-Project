@@ -471,9 +471,9 @@ while (true) {
                 case "2" -> {
                     updateStatoMezzo(smtd);
                 }
-                case "3" ->  creaTratta();
-                case "4" ->  menuVenditori();
-                case "5" ->  menustatistiche();
+                case "3" -> creaTratta();
+                case "4" -> menuVenditori();
+                case "5" -> menustatistiche();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
