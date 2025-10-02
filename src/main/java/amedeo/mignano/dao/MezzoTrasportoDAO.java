@@ -99,5 +99,9 @@ public class MezzoTrasportoDAO {
             System.out.println(ex.getMessage());
         }
     }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
+}
 

@@ -33,6 +33,8 @@ public class Application {
 
 
     public static void main(String[] args) {
+
+        saliSulMezzo();
 while (true) {
     try {
         System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE");
@@ -279,7 +281,7 @@ while (true) {
             System.out.println("\n--- Menu Utente ---");
             System.out.println("1. Registra utente");
             System.out.println("2. Rinnova card");
-            System.out.println("3. Sali sul bus");
+            System.out.println("3. Sali sul mezzo");
             System.out.println("4. Biglietteria");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
@@ -291,7 +293,7 @@ while (true) {
                 case "2" -> {
                     rinnovaCardMenu();
                 }
-                case "3" -> {System.out.println("BELLO");}
+                case "3" -> saliSulMezzo();
                 case "4" -> ticketMenu();
                 case "0" -> running = false;
                 default ->  throw  new InputErratoException("INPUT NON VALIDO");
@@ -475,6 +477,51 @@ while (true) {
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
+        }
+    }
+
+    public static void saliSulMezzo(){
+        try {
+            System.out.println("Inserisci id del mezzo");
+            int mezzoId = Integer.parseInt(scanner.nextLine());
+            Optional<MezzoTrasporto> optM = Optional.ofNullable(mtd.getEntityManager().find(MezzoTrasporto.class, mezzoId));
+            if(optM.isEmpty()){
+                System.out.println("Mezzo non trovato");
+                return;
+            }
+            MezzoTrasporto mezzoTrasporto = optM.get();
+            if (mezzoTrasporto.getStato() == Stato.IN_SERVIZIO){
+                System.out.println("Scanerizza il biglietto");
+                String bigliettoId = scanner.nextLine();
+                Optional<Biglietto> optB = Optional.ofNullable(ticketDao.getEntityManager().find(Biglietto.class, UUID.fromString(bigliettoId)));
+                if (optB.isEmpty()){
+                    System.out.println("Biglietto Non Trovato");
+                    return;
+                }
+                Biglietto biglietto = optB.get();
+                if(biglietto.isValidazione()){
+                    System.out.println("Questo biglietto è già stato validato");
+                }else {
+                    System.out.println("validazione in corso");
+                    biglietto.setMezzo(mezzoTrasporto);
+                    biglietto.setValidazione(true);
+                    biglietto.setDataValidazione(LocalDate.now());
+                    biglietto.setDataScadenza(LocalDate.now().plusDays(1));
+
+                    ticketDao.aggiornaTicket(biglietto);
+                    System.out.println("Biglietto validato con successo");
+                }
+
+            }else {
+                System.out.println("Il mezzo non è attualmente in servizio");
+            }
+        }catch (NumberFormatException e){
+            System.out.println("INSERISCI UN NUMERO");
+        }catch (IllegalArgumentException e){
+            System.out.println("Inserisci un UUID valido");
+            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
