@@ -538,7 +538,7 @@ case 5 -> stampaNumPercorsaTratta();
                 case "4" ->  menuVenditori();
                 case "5" ->  menustatistiche();
                 case "6" ->  collegaBusTratta();
-                case "7" ->  readCardAndValidate()
+                case "7" ->  readCardAndValidate();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
