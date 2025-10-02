@@ -48,7 +48,7 @@ while (true) {
         int scelta = Integer.parseInt(scanner.nextLine());
         switch (scelta) {
             case 1 :
-                menuAdmin();
+                chiediPassword();
                 break;
             case 2 :
                 menuUtente();
@@ -641,6 +641,17 @@ case 5 -> stampaNumPercorsaTratta();
             System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
         }catch (Exception e){
             System.out.println(e.getMessage());
+        }
+    }
+
+    public static void chiediPassword(){
+        String PASSWORD = "Admin";
+        System.out.println("Inserisci password amministratore:");
+        String pass = scanner.nextLine();
+        if(pass.equals(PASSWORD)){
+            menuAdmin();
+        }else {
+            System.out.println("Password errata");
         }
     }
 
