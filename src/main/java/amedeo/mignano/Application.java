@@ -33,7 +33,6 @@ public class Application {
 
 
     public static void main(String[] args) {
-        readCardAndValidate();
 while (true) {
     try {
         System.out.println("1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE");
