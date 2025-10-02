@@ -163,6 +163,7 @@ while (true) {
             System.out.println("1. Aggiungi Rivenditore");
             System.out.println("2. Aggiungi Distributore");
             System.out.println("3. Mostra Venditori");
+            System.out.println("4. Acquista biglietti e abbonamenti");
             System.out.println("0. Torna indietro");
             System.out.print("Scelta: ");
 
@@ -182,6 +183,7 @@ while (true) {
                     System.out.println("Distributore creato con ID: " + d.getId());
                 }
                 case "3" -> vd.mostraVenditori();
+                case "4" -> ticketMenu();
                 case "0" -> running = false;
                 default -> System.out.println("Scelta non valida, riprova.");
             }
