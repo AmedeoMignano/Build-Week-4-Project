@@ -543,7 +543,7 @@ case 5 -> stampaNumPercorsaTratta();
     }
 
     //COLLEGARE TRATTA A BUS
-    public static void collegaBusTratta(){
+    public static void collegaBusTratta() {
         MezzoTrasporto elTrovato;
         try {
             System.out.println("Inserisci ID mezzo di trasporto: ");
@@ -587,7 +587,8 @@ case 5 -> stampaNumPercorsaTratta();
             return;
         }
         TempiPercorrenza tp = new TempiPercorrenza(tempoPercorrenzaEffettivo, elTrovato, tTrovata);
-       tpd.creaSalva(tp);
+        tpd.creaSalva(tp);
+    }
     public static void saliSulMezzo(){
         try {
             System.out.println("Inserisci id del mezzo");
