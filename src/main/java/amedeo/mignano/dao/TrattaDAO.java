@@ -24,7 +24,7 @@ public class TrattaDAO {
             transaction.begin();
             entityManager.persist(t);
             transaction.commit();
-            System.out.println("Tratta salvata in DB!\nId: " + t.getId());
+            System.out.println(VERDE + "Tratta salvata in DB!\nId: " + t.getId() + RESET);
     }
 
     public Tratta getById(String id) {
@@ -52,6 +52,13 @@ public class TrattaDAO {
             throw new ElementoNonTrovatoException("Nessuna percorrenza trovata per questo mezzo su questa tratta");
         }
         double media = doubleList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        System.out.printf(STR."Media dei tempi effettivi di percorrenza: \{media}\n");
+        System.out.printf(VERDE + STR."Media dei tempi effettivi di percorrenza: \{media}\n" + RESET);
     }
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 }

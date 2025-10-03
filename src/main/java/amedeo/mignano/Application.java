@@ -34,16 +34,17 @@ public class Application {
 
     //COLORI COLORATI COLORELLI
     public static final String GIALLO = "\u001B[33m";
-    public static  final String VERDE = "\u001B[32m";
     public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
     public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
     public static final String RESET = "\u001B[0m";
 
 
     public static void main(String[] args) {
         while (true) {
             try {
-                System.out.println("\n1 -> ADMIN\n2 -> UTENTE\n0 -> TERMINARE" );
+                System.out.println(BLU + "\n1 -> ADMIN " + RESET + GIALLO + "\n2 -> UTENTE" + RESET + VIOLA + "\n0 -> TERMINARE" + RESET );
                 int scelta = Integer.parseInt(scanner.nextLine());
                 switch (scelta) {
                     case 1 :
@@ -69,18 +70,18 @@ public class Application {
     /* ============================== MENU ADMIN ============================== */
     public static void chiediPassword(){
         String PASSWORD = "Admin";
-        System.out.print("\nInserisci password amministratore: ");
+        System.out.print(BLU + "\nInserisci password amministratore: " + RESET);
         String pass = scanner.nextLine();
         if(pass.equals(PASSWORD)){
             menuAdmin();
         }else {
-            System.out.println("Password errata");
+            System.out.println(ROSSO + "Password errata" + RESET);
         }
     }
     public static void menuAdmin() {
         boolean running = true;
         while (running) {
-            System.out.println("\n--- Menu Admin ---");
+            System.out.println(BLU + "\n--- Menu Admin ---");
             System.out.println("1. Aggiungi mezzo di trasporto");
             System.out.println("2. Update stato mezzo di trasporto");
             System.out.println("3. Controlla periodi SERVIZIO/MANUTENZIONE mezzo");
@@ -90,8 +91,8 @@ public class Application {
             System.out.println("7. Visualizza statistiche");
             System.out.println("8. Collega Bus/Tram a tratta");
             System.out.println("9. Controlla Abbonamento" );
-            System.out.println("0. Torna indietro");
-            System.out.print("Scelta: ");
+            System.out.println(VIOLA + "0. Torna indietro");
+            System.out.print(BLU + "Scelta: " + RESET);
             String scelta = scanner.nextLine();
 
             switch (scelta) {
@@ -105,7 +106,7 @@ public class Application {
                 case "8" -> collegaBusTratta();
                 case "9" -> readCardAndValidate();
                 case "0" -> running = false;
-                default -> System.out.println("Scelta non valida, riprova.");
+                default -> System.out.println(ROSSO + "Scelta non valida, riprova." + RESET);
             }
         }
     }
@@ -113,7 +114,7 @@ public class Application {
     public static void creaMezzo(StatoMezzoTrasportoDAO std) {
         TipoMezzoTrasporto tipo;
         try {
-            System.out.print("\nInserisci TIPOLOGIA MEZZO (AUTOBUS / TRAM): ");
+            System.out.print(BLU + "\nInserisci TIPOLOGIA MEZZO (AUTOBUS / TRAM): " + RESET);
             String input = scanner.nextLine().toUpperCase().trim();
             if (input.equals("AUTOBUS") || input.equals("BUS"))
                 tipo = TipoMezzoTrasporto.AUTOBUS;
@@ -123,22 +124,22 @@ public class Application {
                 throw new InputErratoException("INPUT ERRATO! SOLO TRAM O BUS!");
             }
         } catch (NumberFormatException | InputErratoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
             return;
         }
         MezzoTrasporto mt = new MezzoTrasporto(tipo);
         mtd.creaSalva(std, mt);
-        System.out.println("Mezzo salvato in DB!\nId: " + mt.getId());
+        System.out.println(VERDE + "Mezzo salvato in DB!\nId: " + mt.getId() + RESET);
     }
     public static void updateStatoMezzo( StatoMezzoTrasportoDAO std){
         try {
-            System.out.print("\nInserisci ID mezzo di trasporto: ");
+            System.out.print(BLU + "\nInserisci ID mezzo di trasporto: " + RESET);
             int mezzoId;
             try {
                 mezzoId = Integer.parseInt(scanner.nextLine());
                 Optional<MezzoTrasporto> om = Optional.ofNullable(mtd.getEntityManager().find(MezzoTrasporto.class, mezzoId));
                 if (om.isEmpty()) {
-                    System.out.println("ID NON TROVATO!");
+                    System.out.println(ROSSO + "ID NON TROVATO!" + RESET);
                     return;
                 }
                 MezzoTrasporto mt = om.get();
@@ -148,7 +149,7 @@ public class Application {
             } catch (NumberFormatException e) {
                 throw new InputErratoException("INSERISCI SOLO NUMERI");
             }
-            System.out.print("Inserisci nuovo stato (IN_SERVIZIO / FUORI_SERVIZIO / IN_MANUTENZIONE): ");
+            System.out.print(BLU + "Inserisci nuovo stato (IN_SERVIZIO / FUORI_SERVIZIO / IN_MANUTENZIONE): " + RESET);
             String inputStato = scanner.nextLine().toUpperCase();
             Stato nuovoStato;
             if (inputStato.equals("IN_SERVIZIO") || inputStato.equals("INSERVIZIO") || inputStato.equals("IN SERVIZIO")) {
@@ -162,7 +163,7 @@ public class Application {
             }
             mtd.updateStato(std,mezzoId, nuovoStato);
         } catch (InputErratoException | ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
         }
     }
 
@@ -170,23 +171,23 @@ public class Application {
         try {
             String partenza;
             while (true) {
-                System.out.print("\nInserisci PARTENZA: ");
+                System.out.print(BLU + "\nInserisci PARTENZA: " + RESET);
                 partenza = scanner.nextLine();
                 if (!partenza.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
-                    System.out.println("Il nome non può contenere numeri o caratteri speciali.");
+                    System.out.println(ROSSO + "Il nome non può contenere numeri o caratteri speciali." + RESET);
                 } else break;
             }
 
             String capolinea = null;
             while (true) {
-                System.out.print("Inserisci CAPOLINEA: ");
+                System.out.print(BLU + "Inserisci CAPOLINEA: " + RESET);
                 capolinea = scanner.nextLine();
                 if (!capolinea.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
-                    System.out.println("Il nome non può contenere numeri o caratteri speciali.\n");
+                    System.out.println(ROSSO + "Il nome non può contenere numeri o caratteri speciali.\n" + RESET);
                 } else break;
             }
 
-            System.out.print("Inserisci TEMPO PERCORRENZA PREVISTO: ");
+            System.out.print(BLU + "Inserisci TEMPO PERCORRENZA PREVISTO: " + RESET);
             String tempoInput = scanner.nextLine();
             double tempoPercorrenzaPrevisto;
             try {
@@ -195,19 +196,19 @@ public class Application {
                     throw new NumberFormatException("INPUT NON VALIDO\n");
                 }
             } catch (NumberFormatException ex) {
-                System.out.println(ex.getMessage());
+                System.out.println(ROSSO + ex.getMessage() + RESET);
                 return;
             }
             td.creaSalva(partenza,capolinea,tempoPercorrenzaPrevisto);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
         }
     }
 
     public static void menuVenditori() {
         boolean running = true;
         while (running) {
-            System.out.println("\n--- Menu Venditori ---");
+            System.out.println(BLU + "\n--- Menu Venditori ---");
             System.out.println("1. Aggiungi Rivenditore");
             System.out.println("2. Aggiungi Distributore");
             System.out.println("3. Mostra Venditori");
@@ -215,32 +216,32 @@ public class Application {
             System.out.println("5. Mostra biglietti venduti per venditore");
             System.out.println("6. Mostra biglietti venduti per venditore/periodo");
             System.out.println("0. Torna indietro");
-            System.out.print("Scelta: ");
+            System.out.print("Scelta: " + RESET);
 
             String scelta = scanner.nextLine();
             switch (scelta) {
                 case "1" -> {
                     Rivenditore r = new Rivenditore();
                     vd.aggiungiRivenditore(r);
-                    System.out.println("Rivenditore creato con ID: " + r.getId());
+                    System.out.println(VERDE + "Rivenditore creato con ID: " + r.getId() + RESET);
                 }
                 case "2" -> {
-                    System.out.print("\nDistributore attivo? (true/false): ");
+                    System.out.print(BLU + "\nDistributore attivo? (true/false): " + RESET);
                     Distributore d ;
                     try {
                         String scelta3 = scanner.nextLine();
                         if (scelta3.equals("true")) {
                             d = new Distributore(true);
                             vd.aggiungiDistributore(d);
-                            System.out.println("Distributore creato con ID: " + d.getId());
+                            System.out.println(VERDE + "Distributore creato con ID: " + d.getId() + RESET);
                         } else if (scelta3.equals("false")) {
                             d = new Distributore(false);
                             vd.aggiungiDistributore(d);
-                            System.out.println("Distributore creato con ID: " + d.getId());
+                            System.out.println(VERDE + "Distributore creato con ID: " + d.getId() + RESET);
                         }
                         else { throw new InputErratoException("INPUT NON VALIDO");}
                     } catch (InputErratoException ex) {
-                        System.out.println(ex.getMessage());
+                        System.out.println(ROSSO + ex.getMessage() + RESET);
                     }
                 }
                 case "3" -> vd.mostraVenditori();
@@ -248,7 +249,7 @@ public class Application {
                 case "5" -> reportBigliettiVenditore();
                 case "6" -> reportBigliettiVenditorePeriodo();
                 case "0" -> running = false;
-                default -> System.out.println("Scelta non valida, riprova.");
+                default -> System.out.println(ROSSO + "Scelta non valida, riprova." + RESET);
             }
         }
     }
@@ -256,14 +257,14 @@ public class Application {
     public static void menustatistiche() {
         boolean running = true;
         while (running) {
-            System.out.println("\nMenu per statistiche biglietti");
+            System.out.println(BLU + "\nMenu per statistiche biglietti");
             System.out.println("1. conta biglietti validati per mezzo");
             System.out.println("2. conta biglietti validati in un mezzo per periodo");
             System.out.println("3. conta biglietti validati");
             System.out.println("4. calcola media tempi percorrenza per mezzo");
             System.out.println("5. calcola n volte che un dato mezzo percorre una data tratta");
             System.out.println("0. esci ");
-            System.out.print("Scelta: ");
+            System.out.print("Scelta: " + RESET);
 
             try {
                 int scelta = Integer.parseInt(scanner.nextLine().trim());
@@ -275,66 +276,66 @@ public class Application {
                     case 5 -> stampaNumPercorsaTratta();
                     case 0 -> {
                         running = false;
-                        System.out.println("Uscita dal menu statistiche");
+                        System.out.println(BLU + "Uscita dal menu statistiche" + RESET);
                     }
-                    default -> System.out.println("Scelta non valida riprova");
+                    default -> System.out.println(ROSSO + "Scelta non valida riprova" + RESET);
                 }
             } catch (Exception e) {
-                System.out.println("Errore input " + e.getMessage());
+                System.out.println(ROSSO + "Errore input " + e.getMessage() + RESET);
             }
         }
     }
     private static void contaPerMezzo() {
         try {
-            System.out.print("\nInserisci ID del mezzo: ");
+            System.out.print(BLU + "\nInserisci ID del mezzo: " + RESET);
             int mezzoId = Integer.parseInt(scanner.nextLine());
             long result = ticketDao.countBigliettiValidatiByMezzo(mezzoId);
-            System.out.println("Biglietti validati sul mezzo " + mezzoId + ": " + result);
+            System.out.println(VERDE + "Biglietti validati sul mezzo " + mezzoId + ": " + result + RESET);
         }catch (NumberFormatException ex){
             System.out.println(ex.getMessage());
         }
     }
     private static void contaPerPeriodo() {
         try {
-            System.out.print("\nInserisci data inizio (YYYY-MM-DD): ");
+            System.out.print(BLU + "\nInserisci data inizio (YYYY-MM-DD): " + RESET);
             LocalDate start = LocalDate.parse(scanner.nextLine());
-            System.out.print("Inserisci data fine (YYYY-MM-DD): ");
+            System.out.print(BLU + "Inserisci data fine (YYYY-MM-DD): " + RESET);
             LocalDate end = LocalDate.parse(scanner.nextLine());
             int mezzoId;
-            System.out.print("Inserisci ID mezzo di trasporto: ");
+            System.out.print(BLU + "Inserisci ID mezzo di trasporto: " + RESET);
             mezzoId = Integer.parseInt(scanner.nextLine());
             long result = ticketDao.countBigliettiValidatiInPeriodo(start, end, mezzoId);
-            System.out.println("Biglietti validati tra " + start + "e " + end + ": " + result);
+            System.out.println(VERDE + "Biglietti validati tra " + start + " e " + end + ": " + result + RESET);
         } catch (InputErratoException e) {
-            System.out.print("Inserisci un formato valido!");
+            System.out.print(ROSSO + "Inserisci un formato valido!" + RESET);
         } catch (NumberFormatException ex) {
-            System.out.println("SOLO NUMERI.");
+            System.out.println(ROSSO + "SOLO NUMERI." + RESET);
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(ROSSO + e.getMessage() + RESET);
         }
     }
     private static void contaBigliettiValidati() {
         long result = ticketDao.countBigliettiValidati();
-        System.out.println("Biglietti validati: " + result);
+        System.out.println(VERDE + "Biglietti validati: " + result + RESET);
     }
     public static void calcoloTrattaMedia(){
         try {
-            System.out.print("\nInserisci Id tratta: ");
+            System.out.print(BLU + "\nInserisci Id tratta: " + RESET);
             UUID trattaId = UUID.fromString(scanner.nextLine());
-            System.out.print("Inserisci Id mezzo: ");
+            System.out.print(BLU + "Inserisci Id mezzo: " + RESET);
             int mezzoId = Integer.parseInt(scanner.nextLine());
             td.calcoloTrattaMezzoAvg(trattaId, mezzoId);
         } catch (NumberFormatException ex) {
-            System.out.println("ID NON VALIDO!");
+            System.out.println(ROSSO + "ID NON VALIDO!" + RESET);
         } catch (ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
         }
     }
     public static void stampaNumPercorsaTratta() {
         try {
-            System.out.print("Inserisci ID mezzo di trasporto: ");
+            System.out.print(BLU + "Inserisci ID mezzo di trasporto: " + RESET);
             int mezzoId = Integer.parseInt(scanner.nextLine());
-            System.out.print("Inserisci ID tratta: ");
+            System.out.print(BLU + "Inserisci ID tratta: " + RESET);
             UUID trattaId = UUID.fromString(scanner.nextLine());
             MezzoTrasporto mezzo = em.find(MezzoTrasporto.class, mezzoId);
             Tratta tratta = em.find(Tratta.class, trattaId);
@@ -343,46 +344,46 @@ public class Application {
             }
             mtd.stampaNPercorsaTratta(mezzo, tratta);
         } catch (NumberFormatException e) {
-            System.out.println("ID MEZZO NON VALIDO.");
+            System.out.println(ROSSO + "ID MEZZO NON VALIDO." + RESET);
         } catch (IllegalArgumentException e) {
-            System.out.println("ID TRATTA NON CORRETTO.");
+            System.out.println(ROSSO + "ID TRATTA NON CORRETTO." + RESET);
         } catch (ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
         }
     }
 
     public static void collegaBusTratta() {
         MezzoTrasporto elTrovato;
         try {
-            System.out.print("\nInserisci ID mezzo di trasporto: ");
+            System.out.print(BLU + "\nInserisci ID mezzo di trasporto: " + RESET);
             int id = Integer.parseInt(scanner.nextLine());
             elTrovato = em.find(MezzoTrasporto.class, id);
             if (elTrovato == null) {
                 throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID INCORRETTO");
             }
         } catch (NumberFormatException ex) {
-            System.out.println("INSERISCI SOLO NUMERI");
+            System.out.println(ROSSO + "INSERISCI SOLO NUMERI" + RESET);
             return;
         } catch (ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
             return;
         }
         Tratta tTrovata;
         try {
-            System.out.print("Inserisci ID tratta: ");
+            System.out.print(BLU + "Inserisci ID tratta: " + RESET);
             UUID id = UUID.fromString(scanner.nextLine());
             tTrovata = em.find(Tratta.class, id);
             if (tTrovata == null) {
                 throw new ElementoNonTrovatoException("ELEMENTO NON PRESENTE IN DB O ID INCORRETTO");
             }
         } catch (ElementoNonTrovatoException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
             return;
         } catch (IllegalArgumentException ex) {
-            System.out.println("ID TRATTA ERRATO");
+            System.out.println(ROSSO + "ID TRATTA ERRATO" + RESET);
             return;
         }
-        System.out.print("Inserisci TEMPO PERCORRENZA EFFETTIVO: ");
+        System.out.print(BLU + "Inserisci TEMPO PERCORRENZA EFFETTIVO: " + RESET);
         String tempoEffettivoInput = scanner.nextLine();
         double tempoPercorrenzaEffettivo;
         try {
@@ -391,7 +392,7 @@ public class Application {
                 throw new NumberFormatException("INPUT NON VALIDO");
             }
         } catch (NumberFormatException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ROSSO + ex.getMessage() + RESET);
             return;
         }
         TempiPercorrenza tp = new TempiPercorrenza(tempoPercorrenzaEffettivo, elTrovato, tTrovata);
@@ -399,23 +400,23 @@ public class Application {
     }
     public static void readCardAndValidate() {
         try {
-            System.out.print("\nInserisci l'ID della tessera (UUID): ");
+            System.out.print(BLU + "\nInserisci l'ID della tessera (UUID): " + RESET);
             String cardId = scanner.nextLine();
             Optional<Card> optC = Optional.ofNullable(cd.getEm().find(Card.class, UUID.fromString(cardId)));
             if (optC.isEmpty()){
-                System.out.println("Tessera non trovata!");
+                System.out.println(ROSSO + "Tessera non trovata!" + RESET);
                 return;
             }
             Card card = optC.get();
             User a = card.getUser();
             if(a.getName().equalsIgnoreCase("Ajeje") && a.getSurname().equalsIgnoreCase("Brazorf")){
-                System.out.println("Controllore: Mi faccia vedere il biglietto, se ce l'ha.");
-                System.out.println("Altrimenti le farò una contravvenzione!");
+                System.out.println(ROSSO + "Controllore: Mi faccia vedere il biglietto, se ce l'ha.");
+                System.out.println("Altrimenti le farò una contravvenzione!" + RESET);
             }else{
                 ticketDao.subValidity(card.getId());
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+            System.out.println(ROSSO + "UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000)." + RESET);
         }
     }
 
@@ -424,13 +425,13 @@ public class Application {
         boolean running = true;
         while (running) {
             try {
-                System.out.println("\n--- Menu Utente ---");
+                System.out.println(GIALLO + "\n--- Menu Utente ---");
                 System.out.println("1. Registra utente");
                 System.out.println("2. Rinnova tessera");
                 System.out.println("3. Sali sul mezzo");
                 System.out.println("4. Biglietteria");
-                System.out.println("0. Torna indietro");
-                System.out.print("Scelta: ");
+                System.out.println(VIOLA + "0. Torna indietro");
+                System.out.print(GIALLO + "Scelta: " + RESET);
                 String scelta = scanner.nextLine();
 
                 switch (scelta) {
@@ -450,30 +451,30 @@ public class Application {
         try {
             String name;
             while (true) {
-                System.out.print("\nInserisci il nome utente: ");
+                System.out.print(GIALLO + "\nInserisci il nome utente: " + RESET);
                 name = scanner.nextLine().trim();
                 if (!name.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
-                    System.out.println("Il nome non può contenere numeri o caratteri speciali.");
+                    System.out.println(ROSSO + "Il nome non può contenere numeri o caratteri speciali." + RESET);
                 } else break;
             }
 
             String surname;
             while (true) {
-                System.out.print("Inserisci il cognome utente: ");
+                System.out.print(GIALLO + "Inserisci il cognome utente: " + RESET);
                 surname = scanner.nextLine().trim();
                 if (!surname.matches("^[A-Za-zÀ-ÖØ-öø-ÿ'\\-\\s]+$")) {
-                    System.out.println("Il cognome non può contenere numeri o caratteri speciali.\n");
+                    System.out.println(ROSSO + "Il nome non può contenere numeri o caratteri speciali." + RESET);
                 } else break;
             }
 
             LocalDate bornDate;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             while (true) {
-                System.out.print("Inserisci la data di nascita (YYYY-MM-DD): ");
+                System.out.print(GIALLO + "Inserisci la data di nascita (YYYY-MM-DD): " + RESET);
                 String date = scanner.nextLine().trim();
 
                 if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                    System.out.println("Formato non valido. Usa YYYY-MM-DD.\n");
+                    System.out.println(ROSSO + "Formato non valido. Usa YYYY-MM-DD.\n" + RESET);
                     continue;
                 }
 
@@ -481,12 +482,12 @@ public class Application {
                     bornDate = LocalDate.parse(date, formatter);
                     int year = bornDate.getYear();
                     if (year < 1950 || year > LocalDate.now().getYear()) {
-                        System.out.println("L'anno deve essere compreso tra il 1950 e l'anno corrente!\n");
+                        System.out.println(ROSSO + "L'anno deve essere compreso tra il 1950 e l'anno corrente!\n" + RESET);
                         continue;
                     }
                     break;
                 } catch (DateTimeParseException e) {
-                    System.out.println("Data non valida. Verifica giorno e mese.\n");
+                    System.out.println(ROSSO + "Data non valida. Verifica giorno e mese.\n" + RESET);
                 }
             }
 
@@ -495,38 +496,38 @@ public class Application {
             card.setUser(user);
             user.setCard(card);
             uDao.saveUser(user);
-            System.out.println("Utente " + user.getName() + " aggiunto con successo con card valida fino al "
-                    + card.getDue_date());
+            System.out.println(VERDE + "Utente " + user.getName() + " aggiunto con successo con tessera " + card.getId() + " valida fino al "
+                    + card.getDue_date() + RESET);
         } catch (Exception e) {
-            System.out.println("Errore durante la creazione utente: " + e.getMessage());
+            System.out.println(ROSSO + "Errore durante la creazione utente: " + e.getMessage() + RESET);
         }
     }
 
     public static void rinnovaCardMenu() {
         while (true) {
-            System.out.print("\nInserisci l'ID della tessera o premi 0 per uscire: ");
+            System.out.print(GIALLO + "\nInserisci l'ID della tessera o premi 0 per uscire: " + RESET);
             String idCard = scanner.nextLine();
 
             if (idCard.equalsIgnoreCase("0")) {
-                System.out.println("Uscita dal rinnovo tessera.");
+                System.out.println(VIOLA + "Uscita dal rinnovo tessera." + RESET);
                 break;
             }
             try {
                 Optional<Card> optionalCard = Optional.ofNullable(em.find(Card.class, UUID.fromString(idCard)));
                 if (optionalCard.isEmpty()) {
-                    System.out.println("Tessera non presente!");
+                    System.out.println(ROSSO + "Tessera non presente!" + RESET);
                     return;
                 }
                 Card card = optionalCard.get();
 
                 cd.rinnovaCard(card);
-                System.out.println("Tessera aggiornata!");
+                System.out.println(VERDE + "Tessera aggiornata!" + RESET);
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("Inserisci un UUID valido");
-                System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+                System.out.println(ROSSO + "Inserisci un UUID valido" + RESET);
+                System.out.println(ROSSO + "Es: 02ce3860-3126-42af-8ac7-c2a661134129" + RESET);
             } catch (Exception e) {
-                System.out.println("Errore durante l'aggiornamento card: " + e.getMessage());
+                System.out.println(ROSSO + "Errore durante l'aggiornamento card: " + e.getMessage() + RESET);
                 break;
             }
         }
@@ -534,125 +535,125 @@ public class Application {
 
     public static void saliSulMezzo(){
         try {
-            System.out.print("\nInserisci ID del mezzo: ");
+            System.out.print(GIALLO + "\nInserisci ID del mezzo: " + RESET);
             int mezzoId = Integer.parseInt(scanner.nextLine());
             Optional<MezzoTrasporto> optM = Optional.ofNullable(mtd.getEntityManager().find(MezzoTrasporto.class, mezzoId));
             if(optM.isEmpty()){
-                System.out.println("Mezzo non trovato");
+                System.out.println(ROSSO + "Mezzo non trovato" + RESET);
                 return;
             }
             MezzoTrasporto mezzoTrasporto = optM.get();
             if (mezzoTrasporto.getStato() == Stato.IN_SERVIZIO){
-                System.out.println("Scannerizza il biglietto...");
+                System.out.println(GIALLO + "Scannerizza il biglietto..." + RESET);
                 String bigliettoId = scanner.nextLine();
                 Optional<Biglietto> optB = Optional.ofNullable(ticketDao.getEntityManager().find(Biglietto.class, UUID.fromString(bigliettoId)));
                 if (optB.isEmpty()){
-                    System.out.println("Biglietto Non Trovato");
+                    System.out.println(ROSSO + "Biglietto Non Trovato" + RESET);
                     return;
                 }
                 Biglietto biglietto = optB.get();
                 if(biglietto.isValidazione()){
-                    System.out.println("Questo biglietto è già stato validato!");
+                    System.out.println(ROSSO + "Questo biglietto è già stato validato!" + RESET);
                 }else {
-                    System.out.println("validazione in corso...");
+                    System.out.println(GIALLO + "validazione in corso..." + RESET);
                     biglietto.setMezzo(mezzoTrasporto);
                     biglietto.setValidazione(true);
                     biglietto.setDataValidazione(LocalDate.now());
                     biglietto.setDataScadenza(LocalDate.now().plusDays(1));
 
                     ticketDao.aggiornaTicket(biglietto);
-                    System.out.println("Biglietto validato con successo!");
+                    System.out.println(VERDE + "Biglietto validato con successo!" + RESET);
                 }
 
             }else {
-                System.out.println("Il mezzo non è attualmente in servizio!");
+                System.out.println(ROSSO + "Il mezzo non è attualmente in servizio!" + RESET);
             }
         }catch (NumberFormatException e){
-            System.out.println("INSERISCI UN NUMERO");
+            System.out.println(ROSSO + "INSERISCI UN NUMERO" + RESET);
         }catch (IllegalArgumentException e){
-            System.out.println("Inserisci un UUID valido");
-            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+            System.out.println(ROSSO + "Inserisci un UUID valido" + RESET);
+            System.out.println(ROSSO + "Es: 02ce3860-3126-42af-8ac7-c2a661134129" + RESET);
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(ROSSO + e.getMessage() + RESET);
         }
     }
 
     public static void ticketMenu() {
         boolean run = true;
         while (run) {
-            System.out.println("\n--- Menu Ticket ---");
+            System.out.println(GIALLO + "\n--- Menu Ticket ---");
             System.out.println("1. Crea Biglietto");
             System.out.println("2. Crea Abbonamento");
-            System.out.println("0. Torna indietro");
-            System.out.print("Scelta: ");
+            System.out.println(VIOLA + "0. Torna indietro");
+            System.out.print(GIALLO + "Scelta: " + RESET);
             String input = scanner.nextLine();
             switch (input) {
                 case "1" -> creaBiglietto();
                 case "2" -> creaAbbonamento();
                 case "0" -> run = false;
-                default -> System.out.println("Scelta non valida");
+                default -> System.out.println(ROSSO + "Scelta non valida" + RESET);
             }
         }
     }
     public static void creaBiglietto() {
         try {
-            System.out.print("\nInserisci l'ID del venditore: ");
+            System.out.print(GIALLO + "\nInserisci l'ID del venditore: " + RESET);
             String venditoreId = scanner.nextLine();
             Optional<Venditore> optVend = Optional.ofNullable(em.find(Venditore.class, UUID.fromString(venditoreId)));
             if (optVend.isEmpty()) {
-                System.out.println("Venditore non presente");
+                System.out.println(ROSSO + "Venditore non presente" + RESET);
                 return;
             }
             Venditore venditore = optVend.get();
             LocalDate now = LocalDate.now();
             Biglietto biglietto = new Biglietto(venditore, now);
             ticketDao.salvaBiglietto(biglietto);
-            System.out.println("Biglietto con id: " + biglietto.getId() + " acquistato con successo");
+            System.out.println(VERDE + "Biglietto con id: " + biglietto.getId() + " acquistato con successo" + RESET);
         } catch (IllegalArgumentException e) {
-            System.out.println("Inserisci un UUID valido");
-            System.out.println("Es: 02ce3860-3126-42af-8ac7-c2a661134129");
+            System.out.println(ROSSO + "Inserisci un UUID valido" + RESET);
+            System.out.println(ROSSO + "Es: 02ce3860-3126-42af-8ac7-c2a661134129" + RESET);
         }
     }
     public static void creaAbbonamento() {
         try {
-            System.out.print("\nInserisci l'ID del venditore: ");
+            System.out.print(GIALLO + "\nInserisci l'ID del venditore: " + RESET);
             String venditoreId = scanner.nextLine();
             Optional<Venditore> optVend = Optional.ofNullable(em.find(Venditore.class, UUID.fromString(venditoreId)));
             if (optVend.isEmpty()) {
-                System.out.println("Venditore non presente");
+                System.out.println(ROSSO + "Venditore non presente" + RESET);
                 return;
             }
             Venditore venditore = optVend.get();
-            System.out.print("Seleziona tipologia abbonamento (SETTIMANALE/MENSILE): ");
+            System.out.print(GIALLO + "Seleziona tipologia abbonamento (SETTIMANALE/MENSILE): " + RESET);
             String tipo = scanner.nextLine();
             if (!tipo.equalsIgnoreCase("SETTIMANALE") && !tipo.equalsIgnoreCase("MENSILE")) {
-                System.out.println("Scelta non valida, scegli tra SETTIMANALE o MENSILE\n");
+                System.out.println(ROSSO + "Scelta non valida, scegli tra SETTIMANALE o MENSILE\n" + RESET);
                 return;
             }
             Tipologia tipologia = Tipologia.valueOf(tipo.toUpperCase());
             LocalDate now = LocalDate.now();
             LocalDate scadenza = tipo.equalsIgnoreCase("SETTIMANALE") ?
                     now.plusWeeks(1) : now.plusMonths(1);
-            System.out.print("Inserisci Id tessera: ");
+            System.out.print(GIALLO + "Inserisci Id tessera: " + RESET);
             String cardId = scanner.nextLine();
             Optional<Card> optCard = Optional.ofNullable(
                     em.find(Card.class, UUID.fromString(cardId))
             );
 
             if (optCard.isEmpty()) {
-                System.out.println("Tessera non trovata.");
+                System.out.println(ROSSO + "Tessera non trovata." + RESET);
                 return;
             }
 
             Card tessera = optCard.get();
             if (tessera.isExpired()) {
-                System.out.print("Tessera scaduta, vuoi rinnovarla (Y/N)? ");
+                System.out.print(GIALLO + "Tessera scaduta, vuoi rinnovarla (Y/N)? " + RESET);
                 String input = scanner.nextLine();
                 if (input.equalsIgnoreCase("Y")) {
                     cd.rinnovaCard(tessera);
-                    System.out.println("Tessera rinnovata.");
+                    System.out.println(VERDE + "Tessera rinnovata." + RESET);
                 } else {
-                    System.out.println("Impossibile acquistare con tessera scaduta.\n");
+                    System.out.println(ROSSO + "Impossibile acquistare con tessera scaduta.\n" + RESET);
                     return;
                 }
             }
@@ -660,40 +661,40 @@ public class Application {
             Abbonamento abbonamento = new Abbonamento(venditore, now, scadenza, tipologia, tessera);
             ticketDao.salvaAbbonamento(abbonamento);
 
-            System.out.println("Abbonamento creato con ID: " + abbonamento.getId());
+            System.out.println(VERDE + "Abbonamento creato con ID: " + abbonamento.getId() + RESET);
 
         } catch (IllegalArgumentException e) {
-            System.out.println("Formato UUID non valido.");
+            System.out.println(ROSSO + "Formato UUID non valido." + RESET);
         }
     }
     public static void reportBigliettiVenditorePeriodo() {
         try {
-            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            System.out.println(BLU + "Inserisci l'ID del venditore (UUID): " + RESET);
             UUID venditoreId = UUID.fromString(scanner.nextLine());
 
-            System.out.println("Inserisci la data di inizio (formato: yyyy-MM-dd): ");
+            System.out.println(BLU + "Inserisci la data di inizio (formato: yyyy-MM-dd): " + RESET);
             LocalDate start = LocalDate.parse(scanner.nextLine());
 
-            System.out.println("Inserisci la data di fine (formato: yyyy-MM-dd): ");
+            System.out.println(BLU + "Inserisci la data di fine (formato: yyyy-MM-dd): " + RESET);
             LocalDate end = LocalDate.parse(scanner.nextLine());
 
             List<Object[]> results = ticketDao.countPerVenditorePerPeriodo(venditoreId, start, end);
 
             if (results.isEmpty()) {
-                System.out.println("Nessun biglietto venduto da questo venditore nel periodo selezionato.");
+                System.out.println(ROSSO + "Nessun biglietto venduto da questo venditore nel periodo selezionato." + RESET);
             } else {
                 Object[] row = results.get(0);
                 Venditore v = (Venditore) row[0];
                 Long count = (Long) row[1];
 
-                System.out.println("Venditore ID: " + v.getId());
-                System.out.println("Biglietti venduti nel periodo: " + count);
+                System.out.println(VERDE + "Venditore ID: " + v.getId() + RESET);
+                System.out.println(VERDE + "Biglietti venduti nel periodo: " + count + RESET);
             }
 
         } catch (IllegalArgumentException e) {
-            System.out.println("UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+            System.out.println(ROSSO + "UUID non valido. Assicurati di usare il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000)." + RESET);
         } catch (Exception e) {
-            System.out.println("Errore: " + e.getMessage());
+            System.out.println(ROSSO + "Errore: " + e.getMessage() + RESET);
         }
     }
 
@@ -701,32 +702,32 @@ public class Application {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            System.out.println("Inserisci l'ID del venditore (UUID): ");
+            System.out.println(BLU + "Inserisci l'ID del venditore (UUID): " + RESET);
             UUID venditoreId = UUID.fromString(scanner.nextLine());
 
             List<Object[]> results = ticketDao.countPerVenditore(venditoreId);
 
             if (results.isEmpty()) {
-                System.out.println("Nessun biglietto venduto da questo venditore.");
+                System.out.println(ROSSO + "Nessun biglietto venduto da questo venditore." + RESET);
             } else {
                 Object[] row = results.get(0);
                 Venditore v = (Venditore) row[0];
                 Long count = (Long) row[1];
 
-                System.out.println("Venditore ID: " + v.getId());
-                System.out.println("Biglietti venduti totali: " + count);
+                System.out.println(VERDE + "Venditore ID: " + v.getId() + RESET);
+                System.out.println(VERDE + "Biglietti venduti totali: " + count + RESET);
             }
 
         } catch (IllegalArgumentException e) {
-            System.out.println("UUID non valido. Usa il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000).");
+            System.out.println(ROSSO + "UUID non valido. Usa il formato corretto (es. 123e4567-e89b-12d3-a456-426614174000)." + RESET);
         } catch (Exception e) {
-            System.out.println("Errore: " + e.getMessage());
+            System.out.println(ROSSO + "Errore: " + e.getMessage() + RESET);
         }
     }
 
     public static void stampaPeriodiMezzo() {
         try {
-            System.out.print("Inserisci ID del mezzo: ");
+            System.out.print(BLU + "Inserisci ID del mezzo: " + RESET);
             int id = Integer.parseInt(scanner.nextLine());
 
             MezzoTrasporto mezzo = mtd.getEntityManager().find(MezzoTrasporto.class, id);
@@ -736,54 +737,54 @@ public class Application {
 
             List<StatoMezzoTrasporto> periodi = mtd.getPeriodiMezzo(id);
             if (periodi.isEmpty()) {
-                System.out.println("Nessun periodo registrato per questo mezzo.");
+                System.out.println(ROSSO + "Nessun periodo registrato per questo mezzo." + RESET);
             } else {
-                System.out.println("Periodi per il mezzo " + id + ":");
+                System.out.println(VERDE + "Periodi per il mezzo " + id + ":" + RESET);
                 for (StatoMezzoTrasporto s : periodi) {
                     String fine = (s.getDataFine() != null) ? s.getDataFine().toString() : "Ancora attivo";
-                    System.out.println("Stato: " + s.getStato() + ", Inizio: " + s.getDataInizio() + ", Fine: " + fine);
+                    System.out.println(VERDE + "Stato: " + s.getStato() + ", Inizio: " + s.getDataInizio() + ", Fine: " + fine + RESET);
                 }
             }
         } catch (InputMismatchException e) {
-            System.out.println("Errore: inserire un numero intero valido per l'ID.");
+            System.out.println(ROSSO + "Errore: inserire un numero intero valido per l'ID." + RESET);
         } catch (ElementoNonTrovatoException e) {
-            System.out.println(e.getMessage());
+            System.out.println(ROSSO + e.getMessage() + RESET);
         } catch (Exception e) {
-            System.out.println("Errore inatteso: " + e.getMessage());
+            System.out.println(ROSSO + "Errore inatteso: " + e.getMessage() + RESET);
         }
     }
 
     public static void cercaMezziPerStatoPeriodo() {
         try {
-            System.out.print("Inserisci stato (FUORI_SERVIZIO / IN_MANUTENZIONE): ");
+            System.out.print(BLU + "Inserisci stato (FUORI_SERVIZIO / IN_MANUTENZIONE): " + RESET);
             Stato stato = Stato.valueOf(scanner.nextLine().toUpperCase());
 
-            System.out.print("Inserisci data inizio (YYYY-MM-DD): ");
+            System.out.print(BLU + "Inserisci data inizio (YYYY-MM-DD): " + RESET);
             LocalDate inizio = LocalDate.parse(scanner.nextLine());
 
-            System.out.print("Inserisci data fine (YYYY-MM-DD): ");
+            System.out.print(BLU + "Inserisci data fine (YYYY-MM-DD): " + RESET);
             LocalDate fine = LocalDate.parse(scanner.nextLine());
 
             if (fine.isBefore(inizio)) {
-                System.out.println("Errore: la data fine non può essere precedente alla data inizio.");
+                System.out.println(ROSSO + "Errore: la data fine non può essere precedente alla data inizio." + RESET);
                 return;
             }
 
             List<MezzoTrasporto> mezzi = mtd.getMezziByStatoPeriodo(stato, inizio, fine);
             if (mezzi.isEmpty()) {
-                System.out.println("Nessun mezzo trovato per lo stato e il periodo indicato.");
+                System.out.println(ROSSO + "Nessun mezzo trovato per lo stato e il periodo indicato." + RESET);
             } else {
-                System.out.println("Mezzi trovati:");
+                System.out.println(VERDE + "Mezzi trovati:" + RESET);
                 for (MezzoTrasporto m : mezzi) {
-                    System.out.println(m);
+                    System.out.println(VERDE + m + RESET);
                 }
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Errore: stato inserito non valido. Usa FUORI_SERVIZIO o IN_MANUTENZIONE.");
+            System.out.println(ROSSO +"Errore: stato inserito non valido. Usa FUORI_SERVIZIO o IN_MANUTENZIONE." + RESET);
         } catch (DateTimeParseException e) {
-            System.out.println("Errore: formato data non valido. Usa YYYY-MM-DD.");
+            System.out.println(ROSSO + "Errore: formato data non valido. Usa YYYY-MM-DD." + RESET);
         } catch (Exception e) {
-            System.out.println("Errore inatteso: " + e.getMessage());
+            System.out.println(ROSSO + "Errore inatteso: " + e.getMessage() + RESET);
         }
     }
 

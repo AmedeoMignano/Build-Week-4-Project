@@ -22,7 +22,6 @@ public class VenditoreDAO {
         tx.begin();
         em.persist(r);
         tx.commit();
-        System.out.println("Rivenditore aggiunto con id: " + r.getId());
         return r;
     }
 
@@ -31,7 +30,6 @@ public class VenditoreDAO {
         tx.begin();
         em.persist(d);
         tx.commit();
-        System.out.println("Distributore aggiunto con id: " + d.getId());
     }
 
     public void mostraVenditori() {
@@ -39,10 +37,17 @@ public class VenditoreDAO {
                 .getResultList();
 
         if (venditori.isEmpty()) {
-            System.out.println("Nessun venditore trovato.");
+            System.out.println(ROSSO + "Nessun venditore trovato." + RESET);
         } else {
-            System.out.println("\n--- Elenco venditori ---");
-            venditori.forEach(System.out::println);
+            System.out.println(BLU + "\n--- Elenco venditori ---" + RESET);
+            venditori.forEach(venditore -> System.out.println(VERDE + venditore + RESET));
         }
     }
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 }

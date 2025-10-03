@@ -51,7 +51,7 @@ public class TicketDao {
             List<Abbonamento> sub = query.getResultList();
 
             if (sub != null) {
-                System.out.println(sub);
+                System.out.println(VERDE + sub + RESET);
             } else {
                 System.out.println("Nessun abbonamento trovato per la card: " + cardId);
             }
@@ -160,4 +160,12 @@ public class TicketDao {
         );
         return query.getSingleResult();
     }
+
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 }

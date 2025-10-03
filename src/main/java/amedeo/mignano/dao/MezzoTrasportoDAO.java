@@ -44,13 +44,13 @@ public class MezzoTrasportoDAO {
                     StatoMezzoTrasporto statoTrovato = statiAttivi.getFirst();
                     statoTrovato.setDataFine(LocalDate.now());
                     entityManager.merge(statoTrovato);
-                    System.out.println("Stato precedente AGGIORNATO");
+                    System.out.println(VERDE + "Stato precedente AGGIORNATO" + RESET);
                 }
                 mezzo.setStato(nuovoStato);
                 transaction.begin();
                 entityManager.merge(mezzo);
                 transaction.commit();
-                System.out.println("Stato di " + mezzoId + " : " + nuovoStato);
+                System.out.println(VERDE + "Stato di " + mezzoId + " : " + nuovoStato + RESET);
                 std.creaSalva(nuovoStato, mezzo);
             } else {
                 throw  new ElementoNonTrovatoException("ELEMENTO NON TROVATO IN DB");
@@ -62,10 +62,10 @@ public class MezzoTrasportoDAO {
                         TempiPercorrenza.class).setParameter("mezzoId", mezzo.getId()).setParameter("trattaId", tratta.getId()).getResultList();
 
         if (tempiPercorrenza.isEmpty()) {
-            System.out.println("NESSUNA TRATTA REGISTRATA PER QUESTO MEZZO TRASPORTO");
+            System.out.println(ROSSO + "NESSUNA TRATTA REGISTRATA PER QUESTO MEZZO TRASPORTO" + RESET);
         } else {
             int nPercorsaTratta = tempiPercorrenza.size();
-                    System.out.println(" Numero di volte che il mezzo di trasporto ha percorso la tratta: " + nPercorsaTratta);
+                    System.out.println(VERDE + " Numero di volte che il mezzo di trasporto ha percorso la tratta: " + nPercorsaTratta + RESET);
         }
     }
 
@@ -95,6 +95,13 @@ public class MezzoTrasportoDAO {
                 .setParameter("fine", fine)
                 .getResultList();
     }
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 
 }
 

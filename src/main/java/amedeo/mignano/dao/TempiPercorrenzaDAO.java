@@ -25,7 +25,7 @@ public class TempiPercorrenzaDAO {
         transaction.begin();
         entityManager.persist(tp);
         transaction.commit();
-        System.out.println("Tempo Percorrenza salvato in DB!\nId: " + tp.getId());
+        System.out.println(VERDE + "Tempo Percorrenza salvato in DB!\nId: " + tp.getId() + RESET);
     }
 
     public void calcolaTempoMedioTratta() {
@@ -48,4 +48,11 @@ public class TempiPercorrenzaDAO {
             System.out.println(ex.getMessage());
         }
     }
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 }

@@ -27,7 +27,7 @@ public class StatoMezzoTrasportoDAO {
         transaction.begin();
             entityManager.persist(s);
             transaction.commit();
-            System.out.println("Stato salvato in DB!\nId: " + s.getId());
+            System.out.println(VERDE + "Stato salvato in DB!\nId: " + s.getId() + RESET);
     }
 
     public StatoMezzoTrasporto getStatoById(int id) {
@@ -54,5 +54,13 @@ public class StatoMezzoTrasportoDAO {
                 System.out.println(ex.getMessage());
             }
     }
+
+    public static final String GIALLO = "\u001B[33m";
+    public static  final String BLU = "\u001B[34m";
+    public static final String VERDE = "\u001B[32m";
+    public static  final String VIOLA = "\u001B[35m";
+    public static final String ROSSO = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+
 }
 
