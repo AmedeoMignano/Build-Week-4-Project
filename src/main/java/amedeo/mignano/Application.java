@@ -44,7 +44,8 @@ public class Application {
     public static void main(String[] args) {
         while (true) {
             try {
-                System.out.println(BLU + "\n1 -> ADMIN " + RESET + GIALLO + "\n2 -> UTENTE" + RESET + VIOLA + "\n0 -> TERMINARE" + RESET );
+                System.out.println(VERDE + "\n--- Benvenuti in EpiTransports ---");
+                System.out.println(BLU + "\n1 -> ACCEDI COME ADMIN " + RESET + GIALLO + "\n2 -> ACCEDI COME UTENTE" + RESET + VIOLA + "\n0 -> ESCI" + RESET );
                 int scelta = Integer.parseInt(scanner.nextLine());
                 switch (scelta) {
                     case 1 :
