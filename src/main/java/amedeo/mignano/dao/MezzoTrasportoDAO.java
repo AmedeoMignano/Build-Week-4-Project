@@ -31,7 +31,6 @@ public class MezzoTrasportoDAO {
         entityManager.persist(mt);
         transaction.commit();
         std.creaSalva(Stato.IN_SERVIZIO, mt);
-        System.out.println("Mezzo salvato in DB!\nId: " + mt.getId());
     }
 
     public void updateStato( StatoMezzoTrasportoDAO std, int mezzoId, Stato nuovoStato){
@@ -84,10 +83,12 @@ public class MezzoTrasportoDAO {
 
     public List<MezzoTrasporto> getMezziByStatoPeriodo(Stato stato, LocalDate inizio, LocalDate fine) {
         return entityManager.createQuery(
-                        "SELECT DISTINCT s.mezzoTrasporto FROM StatoMezzoTrasporto s " +
-                                "WHERE s.stato = :stato AND " +
-                                "(s.dataInizio BETWEEN :inizio AND :fine OR " +
-                                "(s.dataFine IS NOT NULL AND s.dataFine BETWEEN :inizio AND :fine))",
+                        "SELECT DISTINCT m " +
+                                "FROM MezzoTrasporto m " +
+                                "JOIN StatoMezzoTrasporto s ON s.mezzoTrasporto.id = m.id " +
+                                "WHERE s.stato = :stato " +
+                                "AND s.dataInizio >= :inizio " +
+                                "AND (s.dataFine IS NULL OR s.dataFine <= :fine)",
                         MezzoTrasporto.class)
                 .setParameter("stato", stato)
                 .setParameter("inizio", inizio)

@@ -84,9 +84,9 @@ public class Application {
             System.out.println("1. Aggiungi mezzo di trasporto");
             System.out.println("2. Update stato mezzo di trasporto");
             System.out.println("3. Controlla periodi SERVIZIO/MANUTENZIONE mezzo");
-            System.out.println("4. Cerca mezzo per STATO/PERIODO");
+            System.out.println("4. Cerca mezzi per FUORI_SERVIZIO, IN_MANUTENZIONE/PERIODO");
             System.out.println("5. Inserisci nuova tratta");
-            System.out.println("6. Inserisci venditore");
+            System.out.println("6. Menu venditori");
             System.out.println("7. Visualizza statistiche");
             System.out.println("8. Collega Bus/Tram a tratta");
             System.out.println("9. Controlla Abbonamento" );
@@ -426,7 +426,7 @@ public class Application {
             try {
                 System.out.println("\n--- Menu Utente ---");
                 System.out.println("1. Registra utente");
-                System.out.println("2. Rinnova card");
+                System.out.println("2. Rinnova tessera");
                 System.out.println("3. Sali sul mezzo");
                 System.out.println("4. Biglietteria");
                 System.out.println("0. Torna indietro");
@@ -727,7 +727,7 @@ public class Application {
     public static void stampaPeriodiMezzo() {
         try {
             System.out.print("Inserisci ID del mezzo: ");
-            int id = scanner.nextInt();
+            int id = Integer.parseInt(scanner.nextLine());
 
             MezzoTrasporto mezzo = mtd.getEntityManager().find(MezzoTrasporto.class, id);
             if (mezzo == null) {
@@ -746,7 +746,6 @@ public class Application {
             }
         } catch (InputMismatchException e) {
             System.out.println("Errore: inserire un numero intero valido per l'ID.");
-            scanner.nextLine(); // pulisce buffer
         } catch (ElementoNonTrovatoException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
@@ -756,7 +755,7 @@ public class Application {
 
     public static void cercaMezziPerStatoPeriodo() {
         try {
-            System.out.print("Inserisci stato (IN_SERVIZIO / IN_MANUTENZIONE): ");
+            System.out.print("Inserisci stato (FUORI_SERVIZIO / IN_MANUTENZIONE): ");
             Stato stato = Stato.valueOf(scanner.nextLine().toUpperCase());
 
             System.out.print("Inserisci data inizio (YYYY-MM-DD): ");
@@ -780,7 +779,7 @@ public class Application {
                 }
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Errore: stato inserito non valido. Usa IN_SERVIZIO o IN_MANUTENZIONE.");
+            System.out.println("Errore: stato inserito non valido. Usa FUORI_SERVIZIO o IN_MANUTENZIONE.");
         } catch (DateTimeParseException e) {
             System.out.println("Errore: formato data non valido. Usa YYYY-MM-DD.");
         } catch (Exception e) {
