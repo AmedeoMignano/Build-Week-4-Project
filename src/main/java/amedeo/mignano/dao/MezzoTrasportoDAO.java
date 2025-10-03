@@ -65,7 +65,7 @@ public class MezzoTrasportoDAO {
             System.out.println(ROSSO + "NESSUNA TRATTA REGISTRATA PER QUESTO MEZZO TRASPORTO" + RESET);
         } else {
             int nPercorsaTratta = tempiPercorrenza.size();
-                    System.out.println(VERDE + " Numero di volte che il mezzo di trasporto ha percorso la tratta: " + nPercorsaTratta + RESET);
+                    System.out.println(VERDE + "Numero di volte che il mezzo di trasporto ha percorso la tratta: " + nPercorsaTratta + RESET);
         }
     }
 
